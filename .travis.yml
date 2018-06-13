@@ -1,0 +1,25 @@
+language: node_js
+node_js: stable
+dist: trusty
+addons:
+  sauce_connect: true
+  sonarqube:
+      token:
+        secure: ${SONAR_TOKEN}
+      branches:
+        - master
+
+before_script:
+  - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+
+script:
+  - npm run build
+  - npm test
+
+after_success:
+  - npm run test:coverage
+  - npm run coveralls
+  - sonar-scanner
+cache:
+  directories:
+    - '$HOME/.sonar/cache'

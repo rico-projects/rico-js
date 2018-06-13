@@ -1,0 +1,28 @@
+{
+  "extends": ["eslint:recommended"],
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "rules": {
+    "no-console": 0
+  },
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "globals": {
+    "it": false,
+    "__dirname": false,
+    "app": false,
+    "page": false,
+    "Polymer": false,
+    "process": false,
+    "require": false,
+    "module" : false,
+    "exports": false
+  }
+}

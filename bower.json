@@ -1,0 +1,38 @@
+{
+  "name": "rico-js",
+  "version": "1.0.0-CR.7",
+  "main": "./dist/rico.js",
+  "homepage": "https://github.com/rico-project/rico",
+  "authors": [
+    "Michael Heinrichs <michael.heinrichs@karakun.com>",
+    "Hendrik Ebbers <hendrik.ebbers@canoo.com>",
+    "Kunal Singh <kunal.singh@karakun.com>",
+    "Timo Brandstätter <timo.brandstaetter@karakun.com>"
+  ],
+  "description": "todo",
+  "keywords": [
+    "Rico"
+  ],
+  "licenses": [
+    {
+      "type": "Apache-2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  ],
+  "ignore": [
+    "**/.*",
+    "lib",
+    "src",
+    "test",
+    "opendolphin",
+    "gulpfile.js",
+    "karma.conf.js",
+    "package.json",
+    "sauce.launchers.js",
+    "sauce-template.json",
+    "sonar-project.properties"
+  ],
+  "devDependencies": {
+    "core.js": "2.4.1"
+  }
+}

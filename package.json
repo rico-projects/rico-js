@@ -1,0 +1,67 @@
+{
+  "name": "rico-js",
+  "version": "1.0.0-CR.7",
+  "description": "JavaScript API of Rico",
+  "main": "./dist/rico.min.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rico-project/rico-js"
+  },
+  "scripts": {
+    "clean": "node ./node_modules/.bin/rimraf dist/ coverage/ .nyc_output/ .stryker-tmp/ reports/",
+    "clean:all": "node ./node_modules/.bin/rimraf node_modules/ dist/ coverage/ .nyc_output/ .stryker-tmp/ reports/",
+    "build": "node ./node_modules/.bin/webpack",
+    "build:install": "npm install && npm run build",
+    "test": "npm run test:mocha",
+    "test:mocha": "node ./node_modules/.bin/mocha test/src --recursive --require babel-register --require jsdom-global/register",
+    "test:serve": "set NODE_ENV=DEV && node ./node_modules/.bin/webpack-dev-server --env.dev",
+    "test:coverage": "node ./node_modules/.bin/nyc --reporter=lcov --reporter=html --reporter=text npm test",
+    "test:mutation": "node ./node_modules/.bin/stryker run",
+    "coverage": "node ./node_modules/.bin/nyc report --reporter=lcov --reporter=html --reporter=text",
+    "coveralls": "node ./node_modules/.bin/nyc report --reporter=text-lcov | coveralls"
+  },
+  "author": "Michael Heinrichs <michael.heinrichs@canoo.com>",
+  "contributors": [
+    {
+      "name": "Simon Skoczylas",
+      "url": "http://twitter.com/giftkugel",
+      "email": "simon.skoczylas@canoo.com"
+    }
+  ],
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@types/chai": "4.1.0",
+    "@types/mocha": "2.2.46",
+    "babel": "6.23.0",
+    "babel-core": "6.26.0",
+    "babel-loader": "7.1.2",
+    "babel-plugin-transform-runtime": "6.23.0",
+    "babel-preset-es2015": "6.24.1",
+    "babel-register": "6.26.0",
+    "chai": "4.1.2",
+    "coveralls": "3.0.0",
+    "eslint": "4.15.0",
+    "jsdom": "11.5.1",
+    "jsdom-global": "3.0.2",
+    "mocha": "4.1.0",
+    "nyc": "11.4.1",
+    "rimraf": "2.6.2",
+    "sinon": "4.4.2",
+    "sinon-test": "2.1.3",
+    "ssri": "5.2.4",
+    "stryker": "0.19.3",
+    "stryker-api": "0.13.0",
+    "stryker-babel-transpiler": "0.3.1",
+    "stryker-html-reporter": "0.12.1",
+    "stryker-javascript-mutator": "0.4.0",
+    "stryker-mocha-framework": "0.8.3",
+    "stryker-mocha-runner": "0.10.5",
+    "uglifyjs-webpack-plugin": "1.1.6",
+    "webpack": "3.10.0",
+    "webpack-dev-server": "2.11.1"
+  },
+  "dependencies": {
+    "babel-runtime": "6.26.0",
+    "emitter-component": "1.1.1"
+  }
+}
