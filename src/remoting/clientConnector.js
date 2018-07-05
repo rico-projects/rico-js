@@ -134,7 +134,7 @@ export default class ClientConnector {
         if (clientAttribute.getValue() === serverCommand.newValue) {
             return null;
         }
-        clientAttribute.setValueFromServer(serverCommand.newValue);
+        clientAttribute.(serverCommand.newValue);
         return null;
     }
 

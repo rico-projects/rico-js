@@ -174,6 +174,17 @@ class ClassRepository {
         }).forEach(function (attribute) {
             bean[attribute.propertyName] = null;
             attribute.onValueChange(function (event) {
+
+
+
+                //Wenn neuer Wert BEAN (attribute.type == REMOTING_BEAN    -> classInfo[attribute.propertyName])
+                    // Füge neues BEAN in meinen Zentralen Model-Tree hinzu
+                    // Notifizieren über Änderung im Baum
+                //SONST
+                    // Setzte primitiven Datentyp
+                    // Notifiziere über Wertänderung
+
+
                 if (event.oldValue !== event.newValue) {
                     let oldValue = ClassRepository.fromDolphin(self, classInfo[attribute.propertyName], event.oldValue);
                     let newValue = ClassRepository.fromDolphin(self, classInfo[attribute.propertyName], event.newValue);

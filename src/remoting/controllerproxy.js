@@ -3,17 +3,19 @@ import { LoggerFactory } from '../logging';
 
 export default class ControllerProxy {
 
-    constructor(controllerId, model, manager){
+    constructor(controllerId, modelBean, modelId, manager){
         checkMethod('ControllerProxy(controllerId, model, manager)');
         checkParam(controllerId, 'controllerId');
-        checkParam(model, 'model');
+        checkParam(modelBean, 'modelBean');
         checkParam(manager, 'manager');
 
         this.controllerId = controllerId;
-        this.model = model;
+        this.model = modelBean;
         this.manager = manager;
         this.destroyed = false;
         this.onDestroyedHandlers = new Set();
+
+        this.modelId = modelId;
     }
 
     getModel() {

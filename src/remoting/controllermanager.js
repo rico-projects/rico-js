@@ -36,14 +36,14 @@ export default class ControllerManager{
         checkParam(name, 'name');
 
         let self = this;
-        let controllerId, modelId, model, controller;
+        let controllerId, modelId, bean, controller;
         return new Promise((resolve) => {
             self.connector.getHighlanderPM().then((highlanderPM) => {
                 self.connector.invoke(CommandFactory.createCreateControllerCommand(name, parentControllerId)).then(() => {
                     controllerId = highlanderPM.findAttributeByPropertyName(CONTROLLER_ID).getValue();
                     modelId = highlanderPM.findAttributeByPropertyName(MODEL).getValue();
-                    model = self.classRepository.mapDolphinToBean(modelId);
-                    controller = new ControllerProxy(controllerId, model, self);
+                    bean = self.classRepository.mapDolphinToBean(modelId);
+                    controller = new ControllerProxy(controllerId, bean, modelId, self);
                     self.controllers.add(controller);
                     resolve(controller);
                 });
