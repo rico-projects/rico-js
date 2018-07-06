@@ -22,13 +22,13 @@ class ClassRepository {
 
     sendListSplice(classRepository, modelId, propertyName, from, to, newElements) {
         let dolphin = classRepository.dolphin;
-        let model = dolphin.findPresentationModelById(modelId);
-        if (exists(model)) {
-            let classInfo = classRepository.classes.get(model.presentationModelType);
+        let legacyModel = dolphin.findPresentationModelById(modelId);
+        if (exists(legacyModel)) {
+            let classInfo = classRepository.classes.get(legacyModel.presentationModelType);
             let type = classInfo[propertyName];
             if (exists(type)) {
 
-                let attributes = [
+                let legacyAttributes = [
                     dolphin.attribute('@@@ SOURCE_SYSTEM @@@', null, 'client'),
                     dolphin.attribute('source', null, modelId),
                     dolphin.attribute('attribute', null, propertyName),
@@ -37,9 +37,9 @@ class ClassRepository {
                     dolphin.attribute('count', null, newElements.length)
                 ];
                 newElements.forEach(function (element, index) {
-                    attributes.push(dolphin.attribute(index.toString(), null, ClassRepository.toDolphin(classRepository, type, element)));
+                    legacyAttributes.push(dolphin.attribute(index.toString(), null, ClassRepository.toDolphin(classRepository, type, element)));
                 });
-                dolphin.presentationModel.apply(dolphin, [null, '@DP:LS@'].concat(attributes));
+                dolphin.presentationModel.apply(dolphin, [null, '@DP:LS@'].concat(legacyAttributes));
             }
         }
     }
@@ -82,14 +82,14 @@ class ClassRepository {
 
         let modelId = this.beanToDolphin.get(bean);
         if (exists(modelId)) {
-            let model = this.dolphin.findPresentationModelById(modelId);
-            if (exists(model)) {
-                let classInfo = this.classes.get(model.presentationModelType);
+            let legacyModel = this.dolphin.findPresentationModelById(modelId);
+            if (exists(legacyModel)) {
+                let classInfo = this.classes.get(legacyModel.presentationModelType);
                 let type = classInfo[propertyName];
-                let attribute = model.findAttributeByPropertyName(propertyName);
-                if (exists(type) && exists(attribute)) {
-                    let oldValue = attribute.getValue();
-                    attribute.setValue(ClassRepository.toDolphin(this, type, newValue));
+                let legacyAttribute = legacyModel.findAttributeByPropertyName(propertyName);
+                if (exists(type) && exists(legacyAttribute)) {
+                    let oldValue = legacyAttribute.getValue();
+                    legacyAttribute.setValue(ClassRepository.toDolphin(this, type, newValue));
                     return ClassRepository.fromDolphin(this, type, oldValue);
                 }
             }
@@ -139,41 +139,42 @@ class ClassRepository {
         this.arrayUpdateHandlers.push(handler);
     }
 
-    registerClass(model) {
-        checkMethod('ClassRepository.registerClass(model)');
-        checkParam(model, 'model');
+    registerClass(legacyModel) {
+        checkMethod('ClassRepository.registerClass(legacyModel)');
+        checkParam(legacyModel, 'legacyModel');
 
-        if (this.classes.has(model.id)) {
+        if (this.classes.has(legacyModel.id)) {
             return;
         }
 
         let classInfo = {};
-        model.attributes.filter(function (attribute) {
-            return attribute.propertyName.search(/^@/) < 0;
-        }).forEach(function (attribute) {
-            classInfo[attribute.propertyName] = attribute.value;
+        legacyModel.attributes.filter(function (legacyAttribute) {
+            return legacyAttribute.propertyName.search(/^@/) < 0;
+        }).forEach(function (legacyAttribute) {
+            classInfo[legacyAttribute.propertyName] = legacyAttribute.value;
         });
-        this.classes.set(model.id, classInfo);
+        this.classes.set(legacyModel.id, classInfo);
     }
 
-    unregisterClass(model) {
-        checkMethod('ClassRepository.unregisterClass(model)');
-        checkParam(model, 'model');
-        this.classes['delete'](model.id);
+    unregisterClass(legacyModel) {
+        checkMethod('ClassRepository.unregisterClass(legacyModel)');
+        checkParam(legacyModel, 'legacyModel');
+        this.classes['delete'](legacyModel.id);
     }
 
-    load(model) {
-        checkMethod('ClassRepository.load(model)');
-        checkParam(model, 'model');
+    load(legacyModel) {
+        checkMethod('ClassRepository.load(legacyModel)');
+        checkParam(legacyModel, 'legacyModel');
 
         let self = this;
-        let classInfo = this.classes.get(model.presentationModelType);
+        let classInfo = this.classes.get(legacyModel.presentationModelType);
         let bean = {};
-        model.attributes.filter(function (attribute) {
-            return (attribute.propertyName.search(/^@/) < 0);
-        }).forEach(function (attribute) {
-            bean[attribute.propertyName] = null;
-            attribute.onValueChange(function (event) {
+        legacyModel.attributes.filter(function (legacyAttribute) {
+            return (legacyAttribute.propertyName.search(/^@/) < 0);
+        }).forEach(function (legacyAttribute) {
+            let propertyName = legacyAttribute.propertyName;
+            bean[propertyName] = null;
+            legacyAttribute.onValueChange(function (event) {
 
 
 
@@ -186,11 +187,11 @@ class ClassRepository {
 
 
                 if (event.oldValue !== event.newValue) {
-                    let oldValue = ClassRepository.fromDolphin(self, classInfo[attribute.propertyName], event.oldValue);
-                    let newValue = ClassRepository.fromDolphin(self, classInfo[attribute.propertyName], event.newValue);
+                    let oldValue = ClassRepository.fromDolphin(self, classInfo[legacyAttribute.propertyName], event.oldValue);
+                    let newValue = ClassRepository.fromDolphin(self, classInfo[legacyAttribute.propertyName], event.newValue);
                     self.propertyUpdateHandlers.forEach((handler) => {
                         try {
-                            handler(model.presentationModelType, bean, attribute.propertyName, newValue, oldValue);
+                            handler(legacyModel.presentationModelType, bean, legacyAttribute.propertyName, newValue, oldValue);
                         } catch (e) {
                             ClassRepository.LOGGER.error('An exception occurred while calling an onBeanUpdate-handler', e);
                         }
@@ -198,12 +199,12 @@ class ClassRepository {
                 }
             });
         });
-        this.beanFromDolphin.set(model.id, bean);
-        this.beanToDolphin.set(bean, model.id);
-        this.classInfos.set(model.id, classInfo);
+        this.beanFromDolphin.set(legacyModel.id, bean);
+        this.beanToDolphin.set(bean, legacyModel.id);
+        this.classInfos.set(legacyModel.id, classInfo);
         this.beanAddedHandlers.forEach((handler) => {
             try {
-                handler(model.presentationModelType, bean);
+                handler(legacyModel.presentationModelType, bean);
             } catch (e) {
                 ClassRepository.LOGGER.error('An exception occurred while calling an onBeanAdded-handler', e);
             }
@@ -211,18 +212,18 @@ class ClassRepository {
         return bean;
     }
 
-    unload(model) {
-        checkMethod('ClassRepository.unload(model)');
-        checkParam(model, 'model');
+    unload(legacyModel) {
+        checkMethod('ClassRepository.unload(legacyModel)');
+        checkParam(legacyModel, 'legacyModel');
 
-        let bean = this.beanFromDolphin.get(model.id);
-        this.beanFromDolphin['delete'](model.id);
+        let bean = this.beanFromDolphin.get(legacyModel.id);
+        this.beanFromDolphin['delete'](legacyModel.id);
         this.beanToDolphin['delete'](bean);
-        this.classInfos['delete'](model.id);
+        this.classInfos['delete'](legacyModel.id);
         if (exists(bean)) {
             this.beanRemovedHandlers.forEach((handler) => {
                 try {
-                    handler(model.presentationModelType, bean);
+                    handler(legacyModel.presentationModelType, bean);
                 } catch (e) {
                     ClassRepository.LOGGER.error('An exception occurred while calling an onBeanRemoved-handler', e);
                 }
@@ -231,27 +232,27 @@ class ClassRepository {
         return bean;
     }
 
-    spliceListEntry(model) {
-        checkMethod('ClassRepository.spliceListEntry(model)');
-        checkParam(model, 'model');
+    spliceListEntry(legacyModel) {
+        checkMethod('ClassRepository.spliceListEntry(legacyModel)');
+        checkParam(legacyModel, 'legacyModel');
 
-        let source = model.findAttributeByPropertyName('source');
-        let attribute = model.findAttributeByPropertyName('attribute');
-        let from = model.findAttributeByPropertyName('from');
-        let to = model.findAttributeByPropertyName('to');
-        let count = model.findAttributeByPropertyName('count');
+        let source = legacyModel.findAttributeByPropertyName('source');
+        let attribute = legacyModel.findAttributeByPropertyName('attribute');
+        let from = legacyModel.findAttributeByPropertyName('from');
+        let to = legacyModel.findAttributeByPropertyName('to');
+        let count = legacyModel.findAttributeByPropertyName('count');
 
         if (exists(source) && exists(attribute) && exists(from) && exists(to) && exists(count)) {
             let classInfo = this.classInfos.get(source.value);
             let bean = this.beanFromDolphin.get(source.value);
             if (exists(bean) && exists(classInfo)) {
-                let type = model.presentationModelType;
+                let type = legacyModel.presentationModelType;
                 //var entry = fromDolphin(this, classInfo[attribute.value], element.value);
                 this.validateList(this, type, bean, attribute.value);
                 let newElements = [],
                     element = null;
                 for (let i = 0; i < count.value; i++) {
-                    element = model.findAttributeByPropertyName(i.toString());
+                    element = legacyModel.findAttributeByPropertyName(i.toString());
                     if (!exists(element)) {
                         throw new Error("Invalid list modification update received");
                     }
