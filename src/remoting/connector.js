@@ -3,7 +3,7 @@ import CommandFactory from './commands/commandFactory';
 import {ADDED_TYPE, REMOVED_TYPE} from './constants';
 
 
-const DOLPHIN_BEAN = '@@@ DOLPHIN_BEAN @@@';
+const DOLPHIN_BEAN = '@@@ R_BEAN @@@';
 const ACTION_CALL_BEAN = '@@@ CONTROLLER_ACTION_CALL_BEAN @@@';
 const HIGHLANDER_BEAN = '@@@ HIGHLANDER_BEAN @@@';
 const DOLPHIN_LIST_SPLICE = '@DP:LS@';

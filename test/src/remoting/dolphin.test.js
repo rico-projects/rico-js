@@ -38,7 +38,7 @@ describe('Remoting Message Distribution', function() {
     it('should call registerClass()', sinon.test(function() {
         classRepository.registerClass = this.spy();
         let model = {
-            presentationModelType: '@@@ DOLPHIN_BEAN @@@',
+            presentationModelType: '@@@ R_BEAN @@@',
             findAttributeByPropertyName: this.stub().withArgs('@@@ SOURCE_SYSTEM @@@').returns({value: 'server'})
         };
 
@@ -51,7 +51,7 @@ describe('Remoting Message Distribution', function() {
     it('should call unregisterClass()', sinon.test(function() {
         classRepository.unregisterClass = this.spy();
         let model = {
-            presentationModelType: '@@@ DOLPHIN_BEAN @@@',
+            presentationModelType: '@@@ R_BEAN @@@',
             findAttributeByPropertyName: this.stub().withArgs('@@@ SOURCE_SYSTEM @@@').returns({value: 'server'})
         };
 

@@ -3726,7 +3726,7 @@ var _constants = __webpack_require__(40);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var DOLPHIN_BEAN = '@@@ DOLPHIN_BEAN @@@';
+var DOLPHIN_BEAN = '@@@ R_BEAN @@@';
 var ACTION_CALL_BEAN = '@@@ CONTROLLER_ACTION_CALL_BEAN @@@';
 var HIGHLANDER_BEAN = '@@@ HIGHLANDER_BEAN @@@';
 var DOLPHIN_LIST_SPLICE = '@DP:LS@';
