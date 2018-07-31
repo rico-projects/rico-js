@@ -91,7 +91,7 @@ describe('Remoting Message Distribution', function() {
         classRepository.spliceListEntry = this.spy();
         this.spy(dolphin, "deletePresentationModel");
         let model = {
-            presentationModelType: '@DP:LS@',
+            presentationModelType: '@R:LS@',
             findAttributeByPropertyName: this.stub().withArgs('@@@ SOURCE_SYSTEM @@@').returns({value: 'server'})
         };
 

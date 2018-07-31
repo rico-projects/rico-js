@@ -3729,7 +3729,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var DOLPHIN_BEAN = '@@@ R_BEAN @@@';
 var ACTION_CALL_BEAN = '@@@ CONTROLLER_ACTION_CALL_BEAN @@@';
 var HIGHLANDER_BEAN = '@@@ HIGHLANDER_BEAN @@@';
-var DOLPHIN_LIST_SPLICE = '@DP:LS@';
+var DOLPHIN_LIST_SPLICE = '@R:LS@';
 var SOURCE_SYSTEM = '@@@ SOURCE_SYSTEM @@@';
 var SOURCE_SYSTEM_CLIENT = 'client';
 var SOURCE_SYSTEM_SERVER = 'server';
