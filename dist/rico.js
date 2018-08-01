@@ -9769,7 +9769,7 @@ var KeycloakFunctions = function () {
                     throw Error('No app name set!');
                 }
             } else {
-                connection = this.connection.createServerProxyConnection(authEndpoint);
+                connection = this.connection.createServerProxyConnection(authEndpoint, realmName);
                 content = 'grant_type=refresh_token&refresh_token=' + refreshToken;
             }
 
