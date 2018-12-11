@@ -1,6 +1,6 @@
 {
   "name": "rico-js",
-  "version": "1.0.0-CR.1",
+  "version": "1.0.0-CR.1a",
   "description": "JavaScript API of Rico",
   "main": "./dist/rico.min.js",
   "repository": {

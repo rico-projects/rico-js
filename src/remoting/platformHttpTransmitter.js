@@ -77,6 +77,8 @@ export default class PlatformHttpTransmitter {
                     //TODO handle failure
                     PlatformHttpTransmitter.LOGGER.error('Cannot reach the sever');
                 }
+            } else {
+                PlatformHttpTransmitter.LOGGER.error('No Rico client found!');
             }
         });
     }
