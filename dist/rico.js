@@ -4063,7 +4063,7 @@ var getService = _client.Client.getService;
 var hasService = _client.Client.hasService;
 var registerServiceProvider = _client.Client.registerServiceProvider;
 
-_client.Client.LOGGER.info('Rico Version:', "1.0.0-CR.1a");
+_client.Client.LOGGER.info('Rico Version:', "1.0.0-CR.3");
 exports.LoggerFactory = _logging.LoggerFactory;
 exports.LogLevel = _logging.LogLevel;
 exports.getService = getService;
