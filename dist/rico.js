@@ -257,7 +257,7 @@ function parseUrl(url) {
 /* 3 */
 /***/ (function(module, exports) {
 
-var core = module.exports = { version: '2.5.7' };
+var core = module.exports = { version: '2.6.0' };
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 
@@ -4063,7 +4063,7 @@ var getService = _client.Client.getService;
 var hasService = _client.Client.hasService;
 var registerServiceProvider = _client.Client.registerServiceProvider;
 
-_client.Client.LOGGER.info('Rico Version:', "1.0.0-CR.1");
+_client.Client.LOGGER.info('Rico Version:', "1.0.0-CR.1a");
 exports.LoggerFactory = _logging.LoggerFactory;
 exports.LogLevel = _logging.LogLevel;
 exports.getService = getService;
@@ -9345,6 +9345,8 @@ var PlatformHttpTransmitter = function () {
                     } else {
                         PlatformHttpTransmitter.LOGGER.error('Cannot reach the sever');
                     }
+                } else {
+                    PlatformHttpTransmitter.LOGGER.error('No Rico client found!');
                 }
             });
         }
