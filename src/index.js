@@ -51,7 +51,7 @@ const LOGGER = LoggerFactory.getLogger('Deprecated:');
 let showWarning = true;
 function warn() {
     if (showWarning) {
-        LOGGER.warn('Please do not use "dolphin" anymore, it may be removed in the next version! Use "client" instead!');
+        LOGGER.warn('Please do not use "dolphin" anymore, it may be removed in the next version! Use "ricoClient" instead!');
         showWarning = false;
     }
 }
