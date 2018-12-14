@@ -56,8 +56,25 @@ function warn() {
     }
 }
 
-if (window) {
-    window.dolphin = {
+if (window) { //TODO: clarify on the need for a global scoped variable 
+    window.ricoClient = {
+        get ClientContextFactory() {
+            return ClientContextFactory;
+        },
+        get createClientContext() {
+            return createClientContext;
+        },
+        get LoggerFactory() {
+            return LoggerFactory;
+        },
+        get LogLevel() {
+            return LogLevel;
+        }
+    };
+
+    window.client = window.ricoClient; // TODO: get rid of this
+
+    window.dolphin = { // TODO remove in next major release
         get ClientContextFactory() {
             warn();
             return ClientContextFactory;
@@ -74,5 +91,5 @@ if (window) {
             warn();
             return LogLevel;
         }
-    }
+    };;
 }

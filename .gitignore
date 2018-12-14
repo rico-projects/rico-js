@@ -1,5 +1,8 @@
 .DS_Store
+
 .idea
+*iml
+
 .nyc_output/
 node_modules/
 coverage/
