@@ -20,13 +20,11 @@
     "coverage": "node ./node_modules/.bin/nyc report --reporter=lcov --reporter=html --reporter=text",
     "coveralls": "node ./node_modules/.bin/nyc report --reporter=text-lcov | coveralls"
   },
-  "author": "Michael Heinrichs <michael.heinrichs@canoo.com>",
   "contributors": [
-    {
-      "name": "Simon Skoczylas",
-      "url": "http://twitter.com/giftkugel",
-      "email": "simon.skoczylas@canoo.com"
-    }
+    "Michael Heinrichs <michael.heinrichs@karakun.com>",
+    "Hendrik Ebbers <hendrik.ebbers@karakun.com>",
+    "Kunal Singh <kunal.s.rathor@gmail.com>",
+    "Timo Brandstätter <timo.brandstaetter@karakun.com>"
   ],
   "license": "Apache-2.0",
   "devDependencies": {
