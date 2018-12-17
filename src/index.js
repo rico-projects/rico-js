@@ -75,5 +75,5 @@ if (window) {
             warn();
             return LogLevel;
         }
-    };;
+    };
 }
