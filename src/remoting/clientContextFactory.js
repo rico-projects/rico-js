@@ -12,6 +12,10 @@ class ClientContextFactory {
 
     constructor(client) {
         this.client = client;
+        if (!client && ClientContextFactory.legecyClientSupport) {
+            ClientContextFactory.LOGGER.warn('Legecy support used.');
+            this.client = ClientContextFactory.legecyClientSupport;
+        }
     }
 
     create(url, config){
@@ -45,7 +49,8 @@ class ClientContextFactory {
 }
 
 ClientContextFactory.LOGGER = LoggerFactory.getLogger('ClientContextFactory');
+ClientContextFactory.legecyClientSupport = false;
 
-let createClientContext = new ClientContextFactory().create;
+let createClientContext = (client) => new ClientContextFactory(client).create;
 
 export { createClientContext, ClientContextFactory };

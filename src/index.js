@@ -60,11 +60,12 @@ if (window) {
     window.dolphin = {
         get ClientContextFactory() {
             warn();
+            ClientContextFactory.legecyClientSupport = Client;
             return ClientContextFactory;
         },
         get createClientContext() {
             warn();
-            return createClientContext;
+            return createClientContext(Client);
         },
         get LoggerFactory() {
             warn();
