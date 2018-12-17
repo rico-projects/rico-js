@@ -2,9 +2,9 @@ import { Executor } from './executor';
 import { RESPONSE_TYPE } from '../platform/constants';
 class ResponseBuilder {
 
-    constructor(configuration) {
+    constructor(configuration, client) {
         this.configuration = configuration;
-        this.executor = new Executor(configuration);
+        this.executor = new Executor(configuration, client);
     }
 
     readBytes() {

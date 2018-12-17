@@ -860,14 +860,14 @@ var _utils = __webpack_require__(2);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var ServiceProvider = function () {
-    function ServiceProvider(serviceClass, name) {
+    function ServiceProvider(serviceClass, name, client) {
         (0, _classCallCheck3.default)(this, ServiceProvider);
 
         (0, _utils.checkMethod)('constructor');
         (0, _utils.checkParam)(serviceClass, 'serviceClass');
         (0, _utils.checkParam)(name, 'name');
 
-        this.serviceInstance = new serviceClass();
+        this.serviceInstance = new serviceClass(client);
         this.name = name;
     }
 
@@ -2312,8 +2312,14 @@ var _platformHttpTransmitter2 = _interopRequireDefault(_platformHttpTransmitter)
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var ClientContextFactory = function () {
-    function ClientContextFactory() {
+    function ClientContextFactory(client) {
         (0, _classCallCheck3.default)(this, ClientContextFactory);
+
+        this.client = client;
+        if (!client && ClientContextFactory.legecyClientSupport) {
+            ClientContextFactory.LOGGER.warn('Legecy support used.');
+            this.client = ClientContextFactory.legecyClientSupport;
+        }
     }
 
     (0, _createClass3.default)(ClientContextFactory, [{
@@ -2323,7 +2329,7 @@ var ClientContextFactory = function () {
             (0, _utils.checkParam)(url, 'url');
             ClientContextFactory.LOGGER.debug('Creating client context', url, config);
 
-            var transmitter = new _platformHttpTransmitter2.default(url, config);
+            var transmitter = new _platformHttpTransmitter2.default(url, config, this.client);
             transmitter.on('error', function (error) {
                 clientContext.emit('error', error);
             });
@@ -2346,8 +2352,11 @@ var ClientContextFactory = function () {
 }();
 
 ClientContextFactory.LOGGER = _logging.LoggerFactory.getLogger('ClientContextFactory');
+ClientContextFactory.legecyClientSupport = false;
 
-var createClientContext = new ClientContextFactory().create;
+var createClientContext = function createClientContext(client) {
+    return new ClientContextFactory(client).create;
+};
 
 exports.createClientContext = createClientContext;
 exports.ClientContextFactory = ClientContextFactory;
@@ -4063,7 +4072,7 @@ var getService = _client.Client.getService;
 var hasService = _client.Client.hasService;
 var registerServiceProvider = _client.Client.registerServiceProvider;
 
-_client.Client.LOGGER.info('Rico Version:', "1.0.0-CR.3");
+_client.Client.LOGGER.info('Rico Version:', "1.0.0-CR.4");
 exports.LoggerFactory = _logging.LoggerFactory;
 exports.LogLevel = _logging.LogLevel;
 exports.getService = getService;
@@ -4108,11 +4117,12 @@ if (window) {
     window.dolphin = {
         get ClientContextFactory() {
             warn();
+            _clientContextFactory.ClientContextFactory.legecyClientSupport = _client.Client;
             return _clientContextFactory.ClientContextFactory;
         },
         get createClientContext() {
             warn();
-            return _clientContextFactory.createClientContext;
+            return (0, _clientContextFactory.createClientContext)(_client.Client);
         },
         get LoggerFactory() {
             warn();
@@ -5142,8 +5152,8 @@ var _utils = __webpack_require__(2);
 
 function register(client) {
     if ((0, _utils.exists)(client)) {
-        var httpClientProvider = new _serviceProvider.ServiceProvider(_httpClient.HttpClient, 'HttpClient');
-        var httpClientInterceptorProvider = new _serviceProvider.ServiceProvider(_httpClientInterceptor.HttpClientInterceptor, 'HttpClientInterceptor');
+        var httpClientProvider = new _serviceProvider.ServiceProvider(_httpClient.HttpClient, 'HttpClient', client);
+        var httpClientInterceptorProvider = new _serviceProvider.ServiceProvider(_httpClientInterceptor.HttpClientInterceptor, 'HttpClientInterceptor', client);
 
         client.registerServiceProvider(httpClientProvider);
         client.registerServiceProvider(httpClientInterceptorProvider);
@@ -5179,8 +5189,10 @@ var _constants = __webpack_require__(14);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var HttpClient = function () {
-    function HttpClient() {
+    function HttpClient(client) {
         (0, _classCallCheck3.default)(this, HttpClient);
+
+        this.client = client;
     }
 
     (0, _createClass3.default)(HttpClient, [{
@@ -5189,7 +5201,7 @@ var HttpClient = function () {
             var configuration = {
                 url: url, method: method
             };
-            this.requestBuilder = new _requestBuilder.RequestBuilder(configuration);
+            this.requestBuilder = new _requestBuilder.RequestBuilder(configuration, this.client);
             return this.requestBuilder;
         }
     }, {
@@ -5245,11 +5257,11 @@ var _utils = __webpack_require__(2);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var RequestBuilder = function () {
-    function RequestBuilder(configuration) {
+    function RequestBuilder(configuration, client) {
         (0, _classCallCheck3.default)(this, RequestBuilder);
 
         this.configuration = configuration;
-        this.reponseBuilder = new _reponseBuilder.ResponseBuilder(configuration);
+        this.reponseBuilder = new _reponseBuilder.ResponseBuilder(configuration, client);
     }
 
     (0, _createClass3.default)(RequestBuilder, [{
@@ -5321,11 +5333,11 @@ var _constants = __webpack_require__(14);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var ResponseBuilder = function () {
-    function ResponseBuilder(configuration) {
+    function ResponseBuilder(configuration, client) {
         (0, _classCallCheck3.default)(this, ResponseBuilder);
 
         this.configuration = configuration;
-        this.executor = new _executor.Executor(configuration);
+        this.executor = new _executor.Executor(configuration, client);
     }
 
     (0, _createClass3.default)(ResponseBuilder, [{
@@ -5392,10 +5404,11 @@ var _constants = __webpack_require__(14);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Executor = function () {
-    function Executor(configuration) {
+    function Executor(configuration, client) {
         (0, _classCallCheck3.default)(this, Executor);
 
         this.configuration = configuration;
+        this.client = client;
     }
 
     (0, _createClass3.default)(Executor, [{
@@ -5404,8 +5417,8 @@ var Executor = function () {
             var _this = this;
 
             var httpWorker = null;
-            if (window.client && window.client.hasService('HttpWorker')) {
-                httpWorker = window.client.getService('HttpWorker');
+            if (this.client && this.client.hasService('HttpWorker')) {
+                httpWorker = this.client.getService('HttpWorker');
             }
 
             var useWorker = httpWorker !== null && (worker === true || timeout === true);
@@ -5415,14 +5428,14 @@ var Executor = function () {
             }
 
             var requestInterceptors = [];
-            if (window.client) {
-                requestInterceptors = window.client.getService('HttpClientInterceptor').getRequestInterceptors();
+            if (this.client) {
+                requestInterceptors = this.client.getService('HttpClientInterceptor').getRequestInterceptors();
                 Executor.LOGGER.trace('Request interceptors found:', requestInterceptors);
             }
 
             var responseInterceptors = [];
-            if (window.client) {
-                responseInterceptors = window.client.getService('HttpClientInterceptor').getResponseInterceptors();
+            if (this.client) {
+                responseInterceptors = this.client.getService('HttpClientInterceptor').getResponseInterceptors();
                 Executor.LOGGER.trace('Response interceptors found:', responseInterceptors);
             }
 
@@ -5543,7 +5556,7 @@ var Executor = function () {
             workerCall = workerCall.bind(this);
 
             return new _promise2.default(function (resolve, reject) {
-                if (useWorker && window.client && window.client.hasService('HttpWorker')) {
+                if (useWorker && _this.client && _this.client.hasService('HttpWorker')) {
                     workerCall(resolve, reject);
                 } else {
                     directCall(resolve, reject);
@@ -6408,7 +6421,7 @@ var _utils = __webpack_require__(2);
 
 function register(client) {
     if ((0, _utils.exists)(client)) {
-        var clientContextFactoryProvider = new _serviceProvider.ServiceProvider(_clientContextFactory.ClientContextFactory, 'ClientContextFactory');
+        var clientContextFactoryProvider = new _serviceProvider.ServiceProvider(_clientContextFactory.ClientContextFactory, 'ClientContextFactory', client);
 
         client.registerServiceProvider(clientContextFactoryProvider);
     }
@@ -9279,11 +9292,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var DOLPHIN_SESSION_TIMEOUT = 408;
 
 var PlatformHttpTransmitter = function () {
-    function PlatformHttpTransmitter(url, config) {
+    function PlatformHttpTransmitter(url, config, client) {
         (0, _classCallCheck3.default)(this, PlatformHttpTransmitter);
 
         this.url = url;
         this.config = config;
+        this.client = client;
         this.headersInfo = (0, _utils.exists)(config) ? config.headersInfo : null;
         this.failed_attempt = 0;
 
@@ -9314,8 +9328,7 @@ var PlatformHttpTransmitter = function () {
 
             var self = this;
             return new _promise2.default(function (resolve, reject) {
-
-                if (window.client) {
+                if (_this.client) {
                     var encodedCommands = _codec2.default.encode(commands);
 
                     if (PlatformHttpTransmitter.LOGGER.isLogLevelUseable(_logging.LogLevel.DEBUG) && !PlatformHttpTransmitter.LOGGER.isLogLevelUseable(_logging.LogLevel.TRACE)) {
@@ -9328,8 +9341,7 @@ var PlatformHttpTransmitter = function () {
                     }
 
                     var useWorker = commands.length === 1 && commands[0].id === _commandConstants.START_LONG_POLL_COMMAND_ID;
-
-                    var httpClient = window.client.getService('HttpClient');
+                    var httpClient = _this.client.getService('HttpClient');
                     if (httpClient && self.failed_attempt <= self.maxRetry) {
                         httpClient.post(self.url).withHeadersInfo(_this.headersInfo).withContent(encodedCommands).readString().execute(useWorker).then(function (response) {
                             resolve(response.content);
@@ -9538,7 +9550,7 @@ var _keycloakSecurity = __webpack_require__(210);
 
 function register(client) {
     if ((0, _utils.exists)(client)) {
-        var securityProvider = new _serviceProvider.ServiceProvider(_keycloakSecurity.KeycloakSecurity, 'Security');
+        var securityProvider = new _serviceProvider.ServiceProvider(_keycloakSecurity.KeycloakSecurity, 'Security', client);
         client.registerServiceProvider(securityProvider);
     }
 }

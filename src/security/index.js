@@ -5,7 +5,7 @@ import { KeycloakSecurity } from './keycloakSecurity';
 
 function register(client) {
     if (exists(client)) {
-        const securityProvider = new ServiceProvider(KeycloakSecurity, 'Security');
+        const securityProvider = new ServiceProvider(KeycloakSecurity, 'Security', client);
         client.registerServiceProvider(securityProvider);
     }
 }

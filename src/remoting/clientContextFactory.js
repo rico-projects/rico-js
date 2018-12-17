@@ -10,12 +10,20 @@ import PlatformHttpTransmitter from './platformHttpTransmitter';
 
 class ClientContextFactory {
 
+    constructor(client) {
+        this.client = client;
+        if (!client && ClientContextFactory.legecyClientSupport) {
+            ClientContextFactory.LOGGER.warn('Legecy support used.');
+            this.client = ClientContextFactory.legecyClientSupport;
+        }
+    }
+
     create(url, config){
         checkMethod('connect(url, config)');
         checkParam(url, 'url');
         ClientContextFactory.LOGGER.debug('Creating client context', url, config);
 
-        const transmitter = new PlatformHttpTransmitter(url, config);
+        const transmitter = new PlatformHttpTransmitter(url, config, this.client);
         transmitter.on('error', function (error) {
             clientContext.emit('error', error);
         });
@@ -41,7 +49,8 @@ class ClientContextFactory {
 }
 
 ClientContextFactory.LOGGER = LoggerFactory.getLogger('ClientContextFactory');
+ClientContextFactory.legecyClientSupport = false;
 
-let createClientContext = new ClientContextFactory().create;
+let createClientContext = (client) => new ClientContextFactory(client).create;
 
 export { createClientContext, ClientContextFactory };

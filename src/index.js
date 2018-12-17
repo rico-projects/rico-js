@@ -51,37 +51,21 @@ const LOGGER = LoggerFactory.getLogger('Deprecated:');
 let showWarning = true;
 function warn() {
     if (showWarning) {
-        LOGGER.warn('Please do not use "dolphin" anymore, it may be removed in the next version! Use "ricoClient" instead!');
+        LOGGER.warn('Please do not use "dolphin" anymore, it may be removed in the next version! Use the new API instead!');
         showWarning = false;
     }
 }
 
-if (window) { //TODO: clarify on the need for a global scoped variable 
-    window.ricoClient = {
-        get ClientContextFactory() {
-            return ClientContextFactory;
-        },
-        get createClientContext() {
-            return createClientContext;
-        },
-        get LoggerFactory() {
-            return LoggerFactory;
-        },
-        get LogLevel() {
-            return LogLevel;
-        }
-    };
-
-    window.client = window.ricoClient; // TODO: get rid of this
-
+if (window) {
     window.dolphin = { // TODO remove in next major release
         get ClientContextFactory() {
             warn();
+            ClientContextFactory.legecyClientSupport = Client;
             return ClientContextFactory;
         },
         get createClientContext() {
             warn();
-            return createClientContext;
+            return createClientContext(Client);
         },
         get LoggerFactory() {
             warn();
@@ -91,5 +75,5 @@ if (window) { //TODO: clarify on the need for a global scoped variable
             warn();
             return LogLevel;
         }
-    };;
+    };
 }

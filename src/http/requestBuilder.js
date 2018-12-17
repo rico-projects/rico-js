@@ -2,9 +2,9 @@ import { ResponseBuilder } from './reponseBuilder';
 import { exists } from '../utils';
 class RequestBuilder {
 
-    constructor(configuration) {
+    constructor(configuration, client) {
         this.configuration = configuration;
-        this.reponseBuilder = new ResponseBuilder(configuration);
+        this.reponseBuilder = new ResponseBuilder(configuration, client);
     }
 
     withHeader(name, value) {
