@@ -4,15 +4,16 @@ import { HttpException } from './httpException';
 import { HTTP } from '../platform/constants';
 class Executor {
 
-    constructor(configuration) {
+    constructor(configuration, client) {
         this.configuration = configuration;
+        this.client = client;
     }
 
     execute(timeout, worker) {
 
         let httpWorker = null;
-        if (window.client && window.client.hasService('HttpWorker')) {
-            httpWorker = window.client.getService('HttpWorker');
+        if (this.client && this.client.hasService('HttpWorker')) {
+            httpWorker = this.client.getService('HttpWorker');
         }
 
         const useWorker = httpWorker !== null && (worker === true || timeout === true);
@@ -22,14 +23,14 @@ class Executor {
         }
 
         let requestInterceptors = [];
-        if (window.client) {
-            requestInterceptors = window.client.getService('HttpClientInterceptor').getRequestInterceptors();
+        if (this.client) {
+            requestInterceptors = this.client.getService('HttpClientInterceptor').getRequestInterceptors();
             Executor.LOGGER.trace('Request interceptors found:', requestInterceptors);
         }
 
         let responseInterceptors = [];
-        if (window.client) {
-            responseInterceptors = window.client.getService('HttpClientInterceptor').getResponseInterceptors();
+        if (this.client) {
+            responseInterceptors = this.client.getService('HttpClientInterceptor').getResponseInterceptors();
             Executor.LOGGER.trace('Response interceptors found:', responseInterceptors);
         }
 
@@ -153,7 +154,7 @@ class Executor {
         workerCall = workerCall.bind(this);
 
         return new Promise((resolve, reject) => {
-            if (useWorker && window.client && window.client.hasService('HttpWorker')) {
+            if (useWorker && this.client && this.client.hasService('HttpWorker')) {
                 workerCall(resolve, reject);
             } else {
                 directCall(resolve, reject);

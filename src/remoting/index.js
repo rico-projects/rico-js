@@ -4,7 +4,7 @@ import { exists } from '../utils'
 
 function register(client) {
     if (exists(client)) {
-        const clientContextFactoryProvider = new ServiceProvider(ClientContextFactory, 'ClientContextFactory');
+        const clientContextFactoryProvider = new ServiceProvider(ClientContextFactory, 'ClientContextFactory', client);
 
         client.registerServiceProvider(clientContextFactoryProvider);
     }

@@ -10,12 +10,16 @@ import PlatformHttpTransmitter from './platformHttpTransmitter';
 
 class ClientContextFactory {
 
+    constructor(client) {
+        this.client = client;
+    }
+
     create(url, config){
         checkMethod('connect(url, config)');
         checkParam(url, 'url');
         ClientContextFactory.LOGGER.debug('Creating client context', url, config);
 
-        const transmitter = new PlatformHttpTransmitter(url, config);
+        const transmitter = new PlatformHttpTransmitter(url, config, this.client);
         transmitter.on('error', function (error) {
             clientContext.emit('error', error);
         });

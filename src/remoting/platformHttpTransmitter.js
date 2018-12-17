@@ -12,9 +12,10 @@ const DOLPHIN_SESSION_TIMEOUT = 408;
 
 export default class PlatformHttpTransmitter {
 
-    constructor(url, config) {
+    constructor(url, config, client) {
         this.url = url;
         this.config = config;
+        this.client = client;
         this.headersInfo = exists(config) ? config.headersInfo : null;
         this.failed_attempt = 0;
 
@@ -39,8 +40,7 @@ export default class PlatformHttpTransmitter {
     _send(commands) {
         const self = this;
         return new Promise((resolve, reject) => {
-
-            if (window.client) {
+            if (this.client) {
                 const encodedCommands = Codec.encode(commands);
 
                 if (PlatformHttpTransmitter.LOGGER.isLogLevelUseable(LogLevel.DEBUG) && !PlatformHttpTransmitter.LOGGER.isLogLevelUseable(LogLevel.TRACE)) {
@@ -53,8 +53,7 @@ export default class PlatformHttpTransmitter {
                 }
 
                 const useWorker = commands.length === 1 && commands[0].id === START_LONG_POLL_COMMAND_ID;
-
-                const httpClient = window.client.getService('HttpClient');
+                const httpClient = this.client.getService('HttpClient');
                 if (httpClient && self.failed_attempt <= self.maxRetry) {
                     httpClient.post(self.url)
                     .withHeadersInfo(this.headersInfo)

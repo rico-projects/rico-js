@@ -2,11 +2,15 @@ import { RequestBuilder } from './requestBuilder';
 import { HTTP } from '../platform/constants';
 class HttpClient {
 
+    constructor(client) {
+        this.client = client;
+    }
+
     request(url, method) {
         const configuration = {
             url, method
         }
-        this.requestBuilder = new RequestBuilder(configuration);
+        this.requestBuilder = new RequestBuilder(configuration, this.client);
         return this.requestBuilder;
     }
 
