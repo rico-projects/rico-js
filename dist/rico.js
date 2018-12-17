@@ -2316,6 +2316,10 @@ var ClientContextFactory = function () {
         (0, _classCallCheck3.default)(this, ClientContextFactory);
 
         this.client = client;
+        if (!client && ClientContextFactory.legecyClientSupport) {
+            ClientContextFactory.LOGGER.warn('Legecy support used.');
+            this.client = ClientContextFactory.legecyClientSupport;
+        }
     }
 
     (0, _createClass3.default)(ClientContextFactory, [{
@@ -2348,8 +2352,11 @@ var ClientContextFactory = function () {
 }();
 
 ClientContextFactory.LOGGER = _logging.LoggerFactory.getLogger('ClientContextFactory');
+ClientContextFactory.legecyClientSupport = false;
 
-var createClientContext = new ClientContextFactory().create;
+var createClientContext = function createClientContext(client) {
+    return new ClientContextFactory(client).create;
+};
 
 exports.createClientContext = createClientContext;
 exports.ClientContextFactory = ClientContextFactory;
@@ -4110,11 +4117,12 @@ if (window) {
     window.dolphin = {
         get ClientContextFactory() {
             warn();
+            _clientContextFactory.ClientContextFactory.legecyClientSupport = _client.Client;
             return _clientContextFactory.ClientContextFactory;
         },
         get createClientContext() {
             warn();
-            return _clientContextFactory.createClientContext;
+            return (0, _clientContextFactory.createClientContext)(_client.Client);
         },
         get LoggerFactory() {
             warn();
