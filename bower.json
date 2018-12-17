@@ -1,6 +1,6 @@
 {
   "name": "rico-js",
-  "version": "1.0.0-CR.3",
+  "version": "1.0.0-CR.4",
   "main": "./dist/rico.js",
   "homepage": "https://github.com/rico-project/rico",
   "authors": [
