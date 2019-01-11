@@ -6,8 +6,8 @@ import sinon from 'sinon';
 import sinonTest from 'sinon-test'
 sinon.test = sinonTest(sinon);
 
-import ClassRepository from '../../../src/remoting/classrepo.js';
-import BeanManager from '../../../src/remoting/beanmanager.js';
+import ClassRepository from '../../../src/remoting/classRepository.js';
+import BeanManager from '../../../src/remoting/beanManager.js'; 
 import * as consts from '../../../src/remoting/constants';
 
 let DP_LS = '@DP:LS@';
