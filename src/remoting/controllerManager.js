@@ -36,34 +36,70 @@ export default class ControllerManager {
         checkParam(name, 'name');
 
         let self = this;
-        let controllerId, modelId, model, controller;
+
         return new Promise((resolve, reject) => {
             self.connector.getHighlanderPM().then((highlanderPM) => {
-                self.connector.invoke(CommandFactory.createCreateControllerCommand(name, parentControllerId)).then((touchedPMs) => {
-                    controllerId = highlanderPM.findAttributeByPropertyName(CONTROLLER_ID).getValue();
-                    if (!controllerId) {
-                        reject('Could not get an controllerID from highlanderPM.');
-                        return;
-                    }
-                    modelId = highlanderPM.findAttributeByPropertyName(MODEL).getValue();
-                    if (!modelId) {
-                        reject('Could not get an modelID from highlanderPM.');
-                        return;
-                    }
-                    model = self.classRepository.mapDolphinToBean(modelId);
-                    if (!model) {
-                        reject('Could not get an model from classRepository for ID: ' + JSON.stringify(modelId));
-                        return;
-                    }
-                    try {
-                        controller = new ControllerProxy(controllerId, model, self);
-                        self.controllers.add(controller);
-                        resolve(controller);
-                    } catch (e) {
-                        reject('Error creating controller: ' + e);
-                    }
+                self.connector.invoke(CommandFactory.createCreateControllerCommand(name, parentControllerId)).then(() => {
+                    let controllerId;
+
+                    self.getValueWithRetry(
+                            () => {
+                                return highlanderPM.findAttributeByPropertyName(CONTROLLER_ID).getValue();
+                            }, 'Could not get an controllerID from highlanderPM.')
+                        .then((ctrlId) => {
+                            controllerId = ctrlId;
+
+                            return self.getValueWithRetry(
+                                () => {
+                                    return highlanderPM.findAttributeByPropertyName(MODEL).getValue();;
+                                }, 'Could not get an modelID from highlanderPM.');
+                        })
+                        .then((modelId) => {
+                            return self.getValueWithRetry(
+                                () => {
+                                    return self.classRepository.mapDolphinToBean(modelId);
+                                }, 'Could not get an model from classRepository for ID: ' + modelId)
+                        })
+                        .then((model) => {
+                            try {
+                                let controller = new ControllerProxy(controllerId, model, self);
+                                self.controllers.add(controller);
+                                resolve(controller);
+                            } catch (e) {
+                                reject('Error creating controller: ' + e);
+                            }
+                        }).catch((error) => {
+                            reject('Error creating controller: ' + error);
+                        });
+                }).catch((error) => {
+                    reject('Error creating controller: ' + error);
                 });
             });
+        });
+    }
+
+
+    getValueWithRetry(getValueCall, errorMessage) {
+        let self = this;
+
+        return new Promise((resolve, reject) => {
+
+            let value = getValueCall();
+            let i = 0;
+
+            if (!(typeof value !== 'undefined' && value !== null)) {
+                // value not found, yet. As we know, it will be there at some point, we retry up to 1000 times.
+                i++;
+                setTimeout(() => {
+                    if (i < 1000) {
+                        self.getValueWithRetry(getValueCall).then((value) => resolve(value));
+                    } else {
+                        reject(errorMessage + " after " + i + " retries.");
+                    }
+                }, 5);
+            } else {
+                resolve(value);
+            }
         });
     }
 
