@@ -24,7 +24,7 @@ export default class Connector{
         this.config = config;
         this.classRepository = classRepository;
         this.highlanderPMResolver = function() {};
-        this.highlanderPMPromise = new Promise(function(resolve) {
+        this.highlanderPMPromise = new Promise((resolve) => {
             self.highlanderPMResolver = resolve;
         });
 
@@ -92,11 +92,14 @@ export default class Connector{
         checkParam(command, 'command');
 
         var dolphin = this.dolphin;
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             dolphin.send(command, {
-                onFinished: () => {
-                    resolve();
-                }
+                onFinished: (params) => {
+                    resolve(params);
+                },
+                onError: (reason) => {
+                    reject(reason);
+                } 
             });
         });
     }

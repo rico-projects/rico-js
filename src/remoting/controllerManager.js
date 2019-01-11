@@ -13,9 +13,9 @@ const CONTROLLER_ID = 'controllerId';
 const MODEL = 'model';
 const ERROR_CODE = 'errorCode';
 
-export default class ControllerManager{
+export default class ControllerManager {
 
-    constructor(dolphin, classRepository, connector){
+    constructor(dolphin, classRepository, connector) {
         checkMethod('ControllerManager(dolphin, classRepository, connector)');
         checkParam(dolphin, 'dolphin');
         checkParam(classRepository, 'classRepository');
@@ -28,7 +28,7 @@ export default class ControllerManager{
     }
 
     createController(name) {
-        return this._createController(name, null)
+        return this._createController(name, null);
     }
 
     _createController(name, parentControllerId) {
@@ -37,15 +37,31 @@ export default class ControllerManager{
 
         let self = this;
         let controllerId, modelId, model, controller;
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             self.connector.getHighlanderPM().then((highlanderPM) => {
-                self.connector.invoke(CommandFactory.createCreateControllerCommand(name, parentControllerId)).then(() => {
+                self.connector.invoke(CommandFactory.createCreateControllerCommand(name, parentControllerId)).then((touchedPMs) => {
                     controllerId = highlanderPM.findAttributeByPropertyName(CONTROLLER_ID).getValue();
+                    if (!controllerId) {
+                        reject('Could not get an controllerID from highlanderPM.');
+                        return;
+                    }
                     modelId = highlanderPM.findAttributeByPropertyName(MODEL).getValue();
+                    if (!modelId) {
+                        reject('Could not get an modelID from highlanderPM.');
+                        return;
+                    }
                     model = self.classRepository.mapDolphinToBean(modelId);
-                    controller = new ControllerProxy(controllerId, model, self);
-                    self.controllers.add(controller);
-                    resolve(controller);
+                    if (!model) {
+                        reject('Could not get an model from classRepository for ID: ' + JSON.stringify(modelId));
+                        return;
+                    }
+                    try {
+                        controller = new ControllerProxy(controllerId, model, self);
+                        self.controllers.add(controller);
+                        resolve(controller);
+                    } catch (e) {
+                        reject('Error creating controller: ' + e);
+                    }
                 });
             });
         });
@@ -57,7 +73,7 @@ export default class ControllerManager{
         checkParam(actionName, 'actionName');
 
         let self = this;
-        return new Promise((resolve, reject) =>{
+        return new Promise((resolve, reject) => {
 
             let attributes = [
                 self.dolphin.attribute(SOURCE_SYSTEM, null, SOURCE_SYSTEM_CLIENT),
@@ -67,11 +83,14 @@ export default class ControllerManager{
             let pm = self.dolphin.presentationModel.apply(self.dolphin, [null, ACTION_CALL_BEAN].concat(attributes));
 
             let actionParams = [];
-            if(exists(params)) {
+            if (exists(params)) {
                 for (var param in params) {
                     if (params.hasOwnProperty(param)) {
                         let value = self.classRepository.mapParamToDolphin(params[param]);
-                        actionParams.push({name: param, value: value});
+                        actionParams.push({
+                            name: param,
+                            value: value
+                        });
                     }
                 }
             }
