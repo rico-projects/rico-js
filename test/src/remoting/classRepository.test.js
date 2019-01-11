@@ -9,7 +9,7 @@ sinon.test = sinonTest(sinon);
 
 import * as consts from '../../../src/remoting/constants';
 
-import ClassRepository from '../../../src/remoting/classrepo.js';
+import ClassRepository from '../../../src/remoting/classRepository.js';
 
 function check( done, func ) {
     try {
