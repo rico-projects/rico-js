@@ -7,8 +7,8 @@ import sinonTest from 'sinon-test'
 sinon.test = sinonTest(sinon);
 
 import Connector from '../../../src/remoting/connector.js';
-import BeanManager from '../../../src/remoting/beanmanager.js';
-import ClassRepository from '../../../src/remoting/classrepo.js';
+import BeanManager from '../../../src/remoting/beanManager.js';
+import ClassRepository from '../../../src/remoting/classRepository.js';
 
 describe('Remoting Message Distribution', function() {
 

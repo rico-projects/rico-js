@@ -1,6 +1,6 @@
 import {exists, checkMethod, checkParam} from '../utils';
 
-import ControllerProxy from './controllerproxy.js';
+import ControllerProxy from './controllerProxy.js';
 
 import CommandFactory from './commands/commandFactory.js';
 

@@ -7,7 +7,7 @@ import sinon from 'sinon';
 import sinonTest from 'sinon-test'
 sinon.test = sinonTest(sinon);
 
-import BeanManager from '../../../src/remoting/beanmanager';
+import BeanManager from '../../../src/remoting/beanManager';
 
 describe('BeanManager', function() {
 

@@ -2,10 +2,10 @@ import { dolphinBuilder } from './dolphinBuilder';
 import { checkMethod, checkParam } from '../utils';
 import { LoggerFactory } from '../logging';
 import Connector from './connector';
-import BeanManager from './beanmanager';
-import ClassRepository from './classrepo';
-import ControllerManager from './controllermanager';
-import ClientContext from './clientcontext';
+import BeanManager from './beanManager';
+import ClassRepository from './classRepository';
+import ControllerManager from './controllerManager';
+import ClientContext from './clientContext';
 import PlatformHttpTransmitter from './platformHttpTransmitter';
 
 class ClientContextFactory {
