@@ -103,7 +103,7 @@ export default class ControllerManager {
                     resolve();
                 }
                 self.dolphin.deletePresentationModel(pm);
-            });
+            }).catch(reject);
         });
     }
 
@@ -112,11 +112,11 @@ export default class ControllerManager {
         checkParam(controller, 'controller');
 
         let self = this;
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             self.connector.getHighlanderPM().then((highlanderPM) => {
                 self.controllers.delete(controller);
                 highlanderPM.findAttributeByPropertyName(CONTROLLER_ID).setValue(controller.controllerId);
-                self.connector.invoke(CommandFactory.createDestroyControllerCommand(controller.getId())).then(resolve);
+                self.connector.invoke(CommandFactory.createDestroyControllerCommand(controller.getId())).then(resolve).catch(reject);
             });
         });
     }
