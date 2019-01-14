@@ -16,4 +16,3 @@ Please use the issue tracker of the [main repository](https://github.com/rico-pr
 ## License 
 
 The project is released as open source under the [Apache License Version 2.0](LICENSE).
-

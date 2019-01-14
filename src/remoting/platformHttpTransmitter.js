@@ -82,7 +82,7 @@ export default class PlatformHttpTransmitter {
         });
     }
 
-    transmit(commands, onDone) {
+    transmit(commands, onDone, onError) {
         this._send(commands)
             .then(responseText => {
                 if (responseText.trim().length > 0) {
@@ -90,17 +90,19 @@ export default class PlatformHttpTransmitter {
                         const responseCommands = Codec.decode(responseText);
                         onDone(responseCommands);
                     } catch (err) {
-                        this.emit('error', new DolphinRemotingError('PlatformHttpTransmitter: Parse error: (Incorrect response = ' + responseText + ')'));
-                        onDone([]);
+                        const errorMsg = 'PlatformHttpTransmitter: Parse error: (Incorrect response = ' + responseText + ')';
+                        this.emit('error', new DolphinRemotingError(errorMsg));
+                        onError(errorMsg);
                     }
                 } else {
-                    this.emit('error', new DolphinRemotingError('PlatformHttpTransmitter: Empty response'));
-                    onDone([]);
+                    const errorMsg = 'PlatformHttpTransmitter: Empty response';
+                    this.emit('error', new DolphinRemotingError(errorMsg));
+                    onError(errorMsg);
                 }
             })
             .catch(error => {
                 this.emit('error', error);
-                onDone([]);
+                onError(error);
             });
     }
 
