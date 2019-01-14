@@ -45,26 +45,24 @@ export default class ControllerManager {
                     let controllerId;
 
                     self.getValueWithRetry(
-                            () => {
-                                return highlanderPM.findAttributeByPropertyName(CONTROLLER_ID).getValue();
-                            }, 'Could not get an controllerID from highlanderPM.')
-                        .then((ctrlId) => {
+                            () => highlanderPM.findAttributeByPropertyName(CONTROLLER_ID).getValue(),
+                            'Could not get an controllerID from highlanderPM.'
+                        ).then((ctrlId) => {
                             controllerId = ctrlId;
-
                             return self.getValueWithRetry(
-                                () => {
-                                    return highlanderPM.findAttributeByPropertyName(MODEL).getValue();
-                                }, 'Could not get an modelID from highlanderPM.');
+                                () => highlanderPM.findAttributeByPropertyName(MODEL).getValue(),
+                                'Could not get an modelID from highlanderPM.'
+                            );
                         })
                         .then((modelId) => {
                             return self.getValueWithRetry(
-                                () => {
-                                    return self.classRepository.mapDolphinToBean(modelId);
-                                }, 'Could not get an model from classRepository for ID: ' + modelId);
+                                () => self.classRepository.mapDolphinToBean(modelId),
+                                'Could not get an model from classRepository for ID: ' + modelId
+                            );
                         })
                         .then((model) => {
                             try {
-                                let controller = new ControllerProxy(controllerId, model, self);
+                                const controller = new ControllerProxy(controllerId, model, self);
                                 self.controllers.add(controller);
                                 resolve(controller);
                             } catch (e) {
