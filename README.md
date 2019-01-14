@@ -3,7 +3,7 @@
 </p>
 
 # Rico JavaScript client [![Build Status](https://travis-ci.org/rico-project/rico-js.svg?branch=master)](https://travis-ci.org/rico-project/rico-js)
-This is the JavaScript client implementation of the Rico framework. All information about Rico can be found [here](https://github.com/rico-project/rico).
+This is the JavaScript client implementation of the Rico. All information about Rico can be found [here](https://github.com/rico-project/rico).
 
 ## Contribute
 
