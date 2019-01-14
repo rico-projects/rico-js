@@ -36,34 +36,68 @@ export default class ControllerManager {
         checkParam(name, 'name');
 
         let self = this;
-        let controllerId, modelId, model, controller;
+
         return new Promise((resolve, reject) => {
             self.connector.getHighlanderPM().then((highlanderPM) => {
-                self.connector.invoke(CommandFactory.createCreateControllerCommand(name, parentControllerId)).then((touchedPMs) => {
-                    controllerId = highlanderPM.findAttributeByPropertyName(CONTROLLER_ID).getValue();
-                    if (!controllerId) {
-                        reject('Could not get an controllerID from highlanderPM.');
-                        return;
-                    }
-                    modelId = highlanderPM.findAttributeByPropertyName(MODEL).getValue();
-                    if (!modelId) {
-                        reject('Could not get an modelID from highlanderPM.');
-                        return;
-                    }
-                    model = self.classRepository.mapDolphinToBean(modelId);
-                    if (!model) {
-                        reject('Could not get an model from classRepository for ID: ' + JSON.stringify(modelId));
-                        return;
-                    }
-                    try {
-                        controller = new ControllerProxy(controllerId, model, self);
-                        self.controllers.add(controller);
-                        resolve(controller);
-                    } catch (e) {
-                        reject('Error creating controller: ' + e);
-                    }
+                const MSG_ERROR_CREATING_CONTROLLER = 'Error creating controller: ';
+
+                self.connector.invoke(CommandFactory.createCreateControllerCommand(name, parentControllerId)).then(() => {
+                    let controllerId;
+
+                    self.getValueWithRetry(
+                            () => highlanderPM.findAttributeByPropertyName(CONTROLLER_ID).getValue(),
+                            'Could not get an controllerID from highlanderPM.'
+                        ).then((ctrlId) => {
+                            controllerId = ctrlId;
+                            return self.getValueWithRetry(
+                                () => highlanderPM.findAttributeByPropertyName(MODEL).getValue(),
+                                'Could not get an modelID from highlanderPM.'
+                            );
+                        })
+                        .then((modelId) => {
+                            return self.getValueWithRetry(
+                                () => self.classRepository.mapDolphinToBean(modelId),
+                                'Could not get an model from classRepository for ID: ' + modelId
+                            );
+                        })
+                        .then((model) => {
+                            try {
+                                const controller = new ControllerProxy(controllerId, model, self);
+                                self.controllers.add(controller);
+                                resolve(controller);
+                            } catch (e) {
+                                reject(MSG_ERROR_CREATING_CONTROLLER + e);
+                            }
+                        }).catch((error) => {
+                            reject(MSG_ERROR_CREATING_CONTROLLER + error);
+                        });
+                }).catch((error) => {
+                    reject(MSG_ERROR_CREATING_CONTROLLER + error);
                 });
             });
+        });
+    }
+
+
+    getValueWithRetry(getValueCall, errorMessage) {
+        return new Promise((resolve, reject) => {
+            const RETRIES = 1000;
+            const RETRY_TIME = 5;
+            let i = 0;
+            const intervalID = setInterval(() => {
+                let value = getValueCall();
+                
+                if (!(typeof value !== 'undefined' && value !== null)) {
+                    i++;
+                    if (i >= RETRIES) {
+                        clearInterval(intervalID);
+                        reject(errorMessage + " after " + i + " retries.");
+                    }
+                } else {
+                    clearInterval(intervalID);
+                    resolve(value);
+                }
+            }, RETRY_TIME);
         });
     }
 
