@@ -80,26 +80,24 @@ export default class ControllerManager {
 
 
     getValueWithRetry(getValueCall, errorMessage) {
-        let self = this;
-
         return new Promise((resolve, reject) => {
-
-            let value = getValueCall();
+            const RETRIES = 1000;
+            const RETRY_TIME = 5;
             let i = 0;
-
-            if (!(typeof value !== 'undefined' && value !== null)) {
-                // value not found, yet. As we know, it will be there at some point, we retry up to 1000 times.
-                i++;
-                setTimeout(() => {
-                    if (i < 1000) {
-                        self.getValueWithRetry(getValueCall).then((value) => resolve(value));
-                    } else {
+            const intervalID = setInterval(() => {
+                let value = getValueCall();
+                
+                if (!(typeof value !== 'undefined' && value !== null)) {
+                    i++;
+                    if (i >= RETRIES) {
+                        clearInterval(intervalID);
                         reject(errorMessage + " after " + i + " retries.");
                     }
-                }, 5);
-            } else {
-                resolve(value);
-            }
+                } else {
+                    clearInterval(intervalID);
+                    resolve(value);
+                }
+            }, RETRY_TIME);
         });
     }
 
