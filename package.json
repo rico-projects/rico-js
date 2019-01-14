@@ -56,7 +56,7 @@
     "stryker-mocha-runner": "0.16.0",
     "uglifyjs-webpack-plugin": "1.1.6",
     "webpack": "3.10.0",
-    "webpack-dev-server": "^3.1.14"
+    "webpack-dev-server": "3.1.14"
   },
   "dependencies": {
     "babel-runtime": "6.26.0",
