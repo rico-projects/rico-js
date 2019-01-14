@@ -39,6 +39,8 @@ export default class ControllerManager {
 
         return new Promise((resolve, reject) => {
             self.connector.getHighlanderPM().then((highlanderPM) => {
+                const MSG_ERROR_CREATING_CONTROLLER = 'Error creating controller: ';
+
                 self.connector.invoke(CommandFactory.createCreateControllerCommand(name, parentControllerId)).then(() => {
                     let controllerId;
 
@@ -51,14 +53,14 @@ export default class ControllerManager {
 
                             return self.getValueWithRetry(
                                 () => {
-                                    return highlanderPM.findAttributeByPropertyName(MODEL).getValue();;
+                                    return highlanderPM.findAttributeByPropertyName(MODEL).getValue();
                                 }, 'Could not get an modelID from highlanderPM.');
                         })
                         .then((modelId) => {
                             return self.getValueWithRetry(
                                 () => {
                                     return self.classRepository.mapDolphinToBean(modelId);
-                                }, 'Could not get an model from classRepository for ID: ' + modelId)
+                                }, 'Could not get an model from classRepository for ID: ' + modelId);
                         })
                         .then((model) => {
                             try {
@@ -66,13 +68,13 @@ export default class ControllerManager {
                                 self.controllers.add(controller);
                                 resolve(controller);
                             } catch (e) {
-                                reject('Error creating controller: ' + e);
+                                reject(MSG_ERROR_CREATING_CONTROLLER + e);
                             }
                         }).catch((error) => {
-                            reject('Error creating controller: ' + error);
+                            reject(MSG_ERROR_CREATING_CONTROLLER + error);
                         });
                 }).catch((error) => {
-                    reject('Error creating controller: ' + error);
+                    reject(MSG_ERROR_CREATING_CONTROLLER + error);
                 });
             });
         });
