@@ -257,7 +257,7 @@ function parseUrl(url) {
 /* 3 */
 /***/ (function(module, exports) {
 
-var core = module.exports = { version: '2.6.1' };
+var core = module.exports = { version: '2.6.0' };
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 
@@ -2289,21 +2289,21 @@ var _connector = __webpack_require__(106);
 
 var _connector2 = _interopRequireDefault(_connector);
 
-var _beanmanager = __webpack_require__(201);
+var _beanManager = __webpack_require__(201);
 
-var _beanmanager2 = _interopRequireDefault(_beanmanager);
+var _beanManager2 = _interopRequireDefault(_beanManager);
 
-var _classrepo = __webpack_require__(202);
+var _classRepository = __webpack_require__(202);
 
-var _classrepo2 = _interopRequireDefault(_classrepo);
+var _classRepository2 = _interopRequireDefault(_classRepository);
 
-var _controllermanager = __webpack_require__(203);
+var _controllerManager = __webpack_require__(203);
 
-var _controllermanager2 = _interopRequireDefault(_controllermanager);
+var _controllerManager2 = _interopRequireDefault(_controllerManager);
 
-var _clientcontext = __webpack_require__(205);
+var _clientContext = __webpack_require__(205);
 
-var _clientcontext2 = _interopRequireDefault(_clientcontext);
+var _clientContext2 = _interopRequireDefault(_clientContext);
 
 var _platformHttpTransmitter = __webpack_require__(206);
 
@@ -2336,12 +2336,12 @@ var ClientContextFactory = function () {
 
             var dolphin = _dolphinBuilder.dolphinBuilder.withTransmitter(transmitter).withSlackMS(4).withMaxBatchSize(_maxSafeInteger2.default).build();
 
-            var classRepository = new _classrepo2.default(dolphin);
-            var beanManager = new _beanmanager2.default(classRepository);
+            var classRepository = new _classRepository2.default(dolphin);
+            var beanManager = new _beanManager2.default(classRepository);
             var connector = new _connector2.default(url, dolphin, classRepository, config);
-            var controllerManager = new _controllermanager2.default(dolphin, classRepository, connector);
+            var controllerManager = new _controllerManager2.default(dolphin, classRepository, connector);
 
-            var clientContext = new _clientcontext2.default(dolphin, beanManager, controllerManager, connector);
+            var clientContext = new _clientContext2.default(dolphin, beanManager, controllerManager, connector);
 
             ClientContextFactory.LOGGER.debug('clientContext created with', clientContext);
 
@@ -3829,10 +3829,13 @@ var Connector = function () {
             (0, _utils.checkParam)(command, 'command');
 
             var dolphin = this.dolphin;
-            return new _promise2.default(function (resolve) {
+            return new _promise2.default(function (resolve, reject) {
                 dolphin.send(command, {
-                    onFinished: function onFinished() {
-                        resolve();
+                    onFinished: function onFinished(params) {
+                        resolve(params);
+                    },
+                    onError: function onError(reason) {
+                        reject(reason);
                     }
                 });
             });
@@ -4072,7 +4075,7 @@ var getService = _client.Client.getService;
 var hasService = _client.Client.hasService;
 var registerServiceProvider = _client.Client.registerServiceProvider;
 
-_client.Client.LOGGER.info('Rico Version:', "1.0.0-CR.4");
+_client.Client.LOGGER.info('Rico Version:', "1.0.1");
 exports.LoggerFactory = _logging.LoggerFactory;
 exports.LogLevel = _logging.LogLevel;
 exports.getService = getService;
@@ -6661,6 +6664,8 @@ var ClientConnector = function () {
                     setTimeout(function () {
                         return _this.doSendNext();
                     }, _this.slackMS);
+                }, function (error) {
+                    callback.onError(error);
                 });
             } else {
                 setTimeout(function () {
@@ -8889,9 +8894,9 @@ var _createClass3 = _interopRequireDefault(_createClass2);
 
 var _utils = __webpack_require__(2);
 
-var _controllerproxy = __webpack_require__(204);
+var _controllerProxy = __webpack_require__(204);
 
-var _controllerproxy2 = _interopRequireDefault(_controllerproxy);
+var _controllerProxy2 = _interopRequireDefault(_controllerProxy);
 
 var _commandFactory = __webpack_require__(41);
 
@@ -8932,21 +8937,63 @@ var ControllerManager = function () {
             (0, _utils.checkParam)(name, 'name');
 
             var self = this;
-            var controllerId = void 0,
-                modelId = void 0,
-                model = void 0,
-                controller = void 0;
-            return new _promise2.default(function (resolve) {
+
+            return new _promise2.default(function (resolve, reject) {
                 self.connector.getHighlanderPM().then(function (highlanderPM) {
+                    var MSG_ERROR_CREATING_CONTROLLER = 'Error creating controller: ';
+
                     self.connector.invoke(_commandFactory2.default.createCreateControllerCommand(name, parentControllerId)).then(function () {
-                        controllerId = highlanderPM.findAttributeByPropertyName(CONTROLLER_ID).getValue();
-                        modelId = highlanderPM.findAttributeByPropertyName(MODEL).getValue();
-                        model = self.classRepository.mapDolphinToBean(modelId);
-                        controller = new _controllerproxy2.default(controllerId, model, self);
-                        self.controllers.add(controller);
-                        resolve(controller);
+                        var controllerId = void 0;
+
+                        self.getValueWithRetry(function () {
+                            return highlanderPM.findAttributeByPropertyName(CONTROLLER_ID).getValue();
+                        }, 'Could not get an controllerID from highlanderPM.').then(function (ctrlId) {
+                            controllerId = ctrlId;
+                            return self.getValueWithRetry(function () {
+                                return highlanderPM.findAttributeByPropertyName(MODEL).getValue();
+                            }, 'Could not get an modelID from highlanderPM.');
+                        }).then(function (modelId) {
+                            return self.getValueWithRetry(function () {
+                                return self.classRepository.mapDolphinToBean(modelId);
+                            }, 'Could not get an model from classRepository for ID: ' + modelId);
+                        }).then(function (model) {
+                            try {
+                                var controller = new _controllerProxy2.default(controllerId, model, self);
+                                self.controllers.add(controller);
+                                resolve(controller);
+                            } catch (e) {
+                                reject(MSG_ERROR_CREATING_CONTROLLER + e);
+                            }
+                        }).catch(function (error) {
+                            reject(MSG_ERROR_CREATING_CONTROLLER + error);
+                        });
+                    }).catch(function (error) {
+                        reject(MSG_ERROR_CREATING_CONTROLLER + error);
                     });
                 });
+            });
+        }
+    }, {
+        key: 'getValueWithRetry',
+        value: function getValueWithRetry(getValueCall, errorMessage) {
+            return new _promise2.default(function (resolve, reject) {
+                var RETRIES = 1000;
+                var RETRY_TIME = 5;
+                var i = 0;
+                var intervalID = setInterval(function () {
+                    var value = getValueCall();
+
+                    if (!(typeof value !== 'undefined' && value !== null)) {
+                        i++;
+                        if (i >= RETRIES) {
+                            clearInterval(intervalID);
+                            reject(errorMessage + " after " + i + " retries.");
+                        }
+                    } else {
+                        clearInterval(intervalID);
+                        resolve(value);
+                    }
+                }, RETRY_TIME);
             });
         }
     }, {
@@ -8968,7 +9015,10 @@ var ControllerManager = function () {
                     for (var param in params) {
                         if (params.hasOwnProperty(param)) {
                             var value = self.classRepository.mapParamToDolphin(params[param]);
-                            actionParams.push({ name: param, value: value });
+                            actionParams.push({
+                                name: param,
+                                value: value
+                            });
                         }
                     }
                 }
@@ -8981,7 +9031,7 @@ var ControllerManager = function () {
                         resolve();
                     }
                     self.dolphin.deletePresentationModel(pm);
-                });
+                }).catch(reject);
             });
         }
     }, {
@@ -8991,11 +9041,11 @@ var ControllerManager = function () {
             (0, _utils.checkParam)(controller, 'controller');
 
             var self = this;
-            return new _promise2.default(function (resolve) {
+            return new _promise2.default(function (resolve, reject) {
                 self.connector.getHighlanderPM().then(function (highlanderPM) {
                     self.controllers.delete(controller);
                     highlanderPM.findAttributeByPropertyName(CONTROLLER_ID).setValue(controller.controllerId);
-                    self.connector.invoke(_commandFactory2.default.createDestroyControllerCommand(controller.getId())).then(resolve);
+                    self.connector.invoke(_commandFactory2.default.createDestroyControllerCommand(controller.getId())).then(resolve).catch(reject);
                 });
             });
         }
@@ -9187,12 +9237,12 @@ var ClientContext = function () {
         key: 'connect',
         value: function connect() {
             var self = this;
-            this.connectionPromise = new _promise2.default(function (resolve) {
+            this.connectionPromise = new _promise2.default(function (resolve, reject) {
                 self._connector.connect();
                 self._connector.invoke(_commandFactory2.default.createCreateContextCommand()).then(function () {
                     self.isConnected = true;
                     resolve();
-                });
+                }).catch(reject);
             });
             return this.connectionPromise;
         }
@@ -9364,7 +9414,7 @@ var PlatformHttpTransmitter = function () {
         }
     }, {
         key: 'transmit',
-        value: function transmit(commands, onDone) {
+        value: function transmit(commands, onDone, onError) {
             var _this2 = this;
 
             this._send(commands).then(function (responseText) {
@@ -9373,16 +9423,18 @@ var PlatformHttpTransmitter = function () {
                         var responseCommands = _codec2.default.decode(responseText);
                         onDone(responseCommands);
                     } catch (err) {
-                        _this2.emit('error', new _errors.DolphinRemotingError('PlatformHttpTransmitter: Parse error: (Incorrect response = ' + responseText + ')'));
-                        onDone([]);
+                        var errorMsg = 'PlatformHttpTransmitter: Parse error: (Incorrect response = ' + responseText + ')';
+                        _this2.emit('error', new _errors.DolphinRemotingError(errorMsg));
+                        onError(errorMsg);
                     }
                 } else {
-                    _this2.emit('error', new _errors.DolphinRemotingError('PlatformHttpTransmitter: Empty response'));
-                    onDone([]);
+                    var _errorMsg = 'PlatformHttpTransmitter: Empty response';
+                    _this2.emit('error', new _errors.DolphinRemotingError(_errorMsg));
+                    onError(_errorMsg);
                 }
             }).catch(function (error) {
                 _this2.emit('error', error);
-                onDone([]);
+                onError(error);
             });
         }
     }, {
