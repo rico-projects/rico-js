@@ -21,12 +21,12 @@ export default class ClientContext{
 
     connect(){
         let self = this;
-        this.connectionPromise = new Promise((resolve) => {
+        this.connectionPromise = new Promise((resolve, reject) => {
             self._connector.connect();
             self._connector.invoke(CommandFactory.createCreateContextCommand()).then(() => {
                 self.isConnected = true;
                 resolve();
-            });
+            }).catch(reject);
         });
         return this.connectionPromise;
     }

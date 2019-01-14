@@ -70,6 +70,8 @@ export default class ClientConnector {
                     callback.onFinished(touchedPMs); // todo: make them unique?
                 }
                 setTimeout(() => this.doSendNext(), this.slackMS);
+            }, (error) => {
+                callback.onError(error);
             });
         } else {
             setTimeout(() => this.doSendNext(), this.slackMS);
