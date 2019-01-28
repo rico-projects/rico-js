@@ -2963,7 +2963,7 @@ describe('List Sync (replacing objects from OpenDolphin)', function() {
         let model = {
             findAttributeByPropertyName: this.stub()
         };
-        classRepository.beanToDolphin.set(model, 1);
+        classRepository.beanToDolphin.set(model, 'source_id');
         beanManager.onArrayUpdate(model, onArrayUpdateHandler);
 
         let source    = { value: 'source_id' };

@@ -51,7 +51,7 @@ export default class BeanManager {
             console.log("Check 2", this.classRepository.beanToDolphin.get(handlerObject.rootBean))
             if(this.classRepository.isBeanOrSubBean(bean, handlerObject.rootBean)) {
                 try {
-                    handler(bean, propertyName, index, count, newElements);
+                    handlerObject.eventHandler(bean, propertyName, index, count, newElements);
                 } catch (e) {
                     BeanManager.LOGGER.error('An exception occurred while calling a general onArrayUpdate-handler', e);
                 }
@@ -63,7 +63,7 @@ export default class BeanManager {
         this.beanUpdateHandlers.forEach((handlerObject) => {
             if(this.classRepository.isBeanOrSubBean(bean, handlerObject.rootBean)) {
                 try {
-                    handler(bean, propertyName, newValue, oldValue);
+                    handlerObject.eventHandler(bean, propertyName, newValue, oldValue);
                 } catch (e) {
                     BeanManager.LOGGER.error('An exception occurred while calling a general onBeanAdded-handler', e);
                 }
