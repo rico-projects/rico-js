@@ -227,10 +227,9 @@ class ClassRepository {
                     let oldValue = ClassRepository.fromDolphin(self, classInfo[attribute.propertyName], event.oldValue);
                     let newValue = ClassRepository.fromDolphin(self, classInfo[attribute.propertyName], event.newValue);
                     bean[attribute.propertyName] = newValue;
-
                     self.propertyUpdateHandlers.forEach((handler) => {
                         try {
-                            handler(bean, attribute.id, attribute.propertyName, newValue, oldValue);
+                            handler(bean, attribute.propertyName, newValue, oldValue);
                         } catch (e) {
                             ClassRepository.LOGGER.error('An exception occurred while calling an onBeanUpdate-handler', e);
                         }
@@ -239,6 +238,7 @@ class ClassRepository {
             });
         });
         this.beanFromDolphin.set(model.id, bean);
+        console.log("Adding bean ", model.id);
         this.beanToDolphin.set(bean, model.id);
         this.classInfos.set(model.id, classInfo);
         this.beanAddedHandlers.forEach((handler) => {

@@ -44,8 +44,6 @@ describe('ClassRepository primitive properties', function() {
         classRepo.registerClass(classModel);
     });
 
-
-
     it('should initialize', sinon.test(function() {
         let beanModel = {
             presentationModelType: 'ComplexClass',
@@ -87,9 +85,9 @@ describe('ClassRepository primitive properties', function() {
         booleanPropertyChangeListener({oldValue: true, newValue: false});
         booleanPropertyChangeListener({oldValue: false, newValue: null});
         sinon.assert.callCount(onBeanUpdateHandler, 3);
-        sinon.assert.calledWith(onBeanUpdateHandler, 'ComplexClass', bean, 'booleanProperty', true, null);
-        sinon.assert.calledWith(onBeanUpdateHandler, 'ComplexClass', bean, 'booleanProperty', false, true);
-        sinon.assert.calledWith(onBeanUpdateHandler, 'ComplexClass', bean, 'booleanProperty', null, false);
+        sinon.assert.calledWith(onBeanUpdateHandler, bean, 'booleanProperty', true, null);
+        sinon.assert.calledWith(onBeanUpdateHandler, bean, 'booleanProperty', false, true);
+        sinon.assert.calledWith(onBeanUpdateHandler, bean, 'booleanProperty', null, false);
     }));
 
     it('can set float from opendolphin', sinon.test(function() {
@@ -112,9 +110,9 @@ describe('ClassRepository primitive properties', function() {
         floatPropertyChangeListener({oldValue: 3.1415, newValue: 2.7182});
         floatPropertyChangeListener({oldValue: 2.7182, newValue: null});
         sinon.assert.callCount(onBeanUpdateHandler, 3);
-        sinon.assert.calledWith(onBeanUpdateHandler, 'ComplexClass', bean, 'floatProperty', 3.1415, null);
-        sinon.assert.calledWith(onBeanUpdateHandler, 'ComplexClass', bean, 'floatProperty', 2.7182, 3.1415);
-        sinon.assert.calledWith(onBeanUpdateHandler, 'ComplexClass', bean, 'floatProperty', null, 2.7182);
+        sinon.assert.calledWith(onBeanUpdateHandler, bean, 'floatProperty', 3.1415, null);
+        sinon.assert.calledWith(onBeanUpdateHandler, bean, 'floatProperty', 2.7182, 3.1415);
+        sinon.assert.calledWith(onBeanUpdateHandler, bean, 'floatProperty', null, 2.7182);
     }));
 
     it('can set integer from opendolphin', sinon.test(function() {
@@ -137,9 +135,9 @@ describe('ClassRepository primitive properties', function() {
         integerPropertyChangeListener({oldValue: 42,   newValue: 4711});
         integerPropertyChangeListener({oldValue: 4711, newValue: null});
         sinon.assert.callCount(onBeanUpdateHandler, 3);
-        sinon.assert.calledWith(onBeanUpdateHandler, 'ComplexClass', bean, 'integerProperty', 42, null);
-        sinon.assert.calledWith(onBeanUpdateHandler, 'ComplexClass', bean, 'integerProperty', 4711, 42);
-        sinon.assert.calledWith(onBeanUpdateHandler, 'ComplexClass', bean, 'integerProperty', null, 4711);
+        sinon.assert.calledWith(onBeanUpdateHandler, bean, 'integerProperty', 42, null);
+        sinon.assert.calledWith(onBeanUpdateHandler, bean, 'integerProperty', 4711, 42);
+        sinon.assert.calledWith(onBeanUpdateHandler, bean, 'integerProperty', null, 4711);
     }));
 
     it('can set string from opendolphin', sinon.test(function() {
@@ -162,9 +160,9 @@ describe('ClassRepository primitive properties', function() {
         stringPropertyChangeListener({oldValue: 'Hello World', newValue: 'Goodbye World'});
         stringPropertyChangeListener({oldValue: 'Goodbye World', newValue: null});
         sinon.assert.callCount(onBeanUpdateHandler, 3);
-        sinon.assert.calledWith(onBeanUpdateHandler, 'ComplexClass', bean, 'stringProperty', 'Hello World', null);
-        sinon.assert.calledWith(onBeanUpdateHandler, 'ComplexClass', bean, 'stringProperty', 'Goodbye World', 'Hello World');
-        sinon.assert.calledWith(onBeanUpdateHandler, 'ComplexClass', bean, 'stringProperty', null, 'Goodbye World');
+        sinon.assert.calledWith(onBeanUpdateHandler, bean, 'stringProperty', 'Hello World', null);
+        sinon.assert.calledWith(onBeanUpdateHandler, bean, 'stringProperty', 'Goodbye World', 'Hello World');
+        sinon.assert.calledWith(onBeanUpdateHandler, bean, 'stringProperty', null, 'Goodbye World');
     }));
 
     it('can set date from opendolphin', sinon.test(function() {
@@ -193,9 +191,9 @@ describe('ClassRepository primitive properties', function() {
         datePropertyChangeListener({oldValue: '2016-02-29T00:01:02.003Z', newValue: '2015-02-28T00:01:02.003Z'});
         datePropertyChangeListener({oldValue: '2015-02-28T00:01:02.003Z', newValue: null});
         sinon.assert.callCount(onBeanUpdateHandler, 3);
-        sinon.assert.calledWith(onBeanUpdateHandler, 'ComplexClass', bean, 'dateProperty', date1, null);
-        sinon.assert.calledWith(onBeanUpdateHandler, 'ComplexClass', bean, 'dateProperty', date2, date1);
-        sinon.assert.calledWith(onBeanUpdateHandler, 'ComplexClass', bean, 'dateProperty', null, date2);
+        sinon.assert.calledWith(onBeanUpdateHandler, bean, 'dateProperty', date1, null);
+        sinon.assert.calledWith(onBeanUpdateHandler, bean, 'dateProperty', date2, date1);
+        sinon.assert.calledWith(onBeanUpdateHandler, bean, 'dateProperty', null, date2);
     }));
 
     it('can set enum from opendolphin', sinon.test(function() {
@@ -218,9 +216,9 @@ describe('ClassRepository primitive properties', function() {
         enumPropertyChangeListener({oldValue: 'VALUE_1', newValue: 'VALUE_2'});
         enumPropertyChangeListener({oldValue: 'VALUE_2', newValue: null});
         sinon.assert.callCount(onBeanUpdateHandler, 3);
-        sinon.assert.calledWith(onBeanUpdateHandler, 'ComplexClass', bean, 'enumProperty', 'VALUE_1', null);
-        sinon.assert.calledWith(onBeanUpdateHandler, 'ComplexClass', bean, 'enumProperty', 'VALUE_2', 'VALUE_1');
-        sinon.assert.calledWith(onBeanUpdateHandler, 'ComplexClass', bean, 'enumProperty', null, 'VALUE_2');
+        sinon.assert.calledWith(onBeanUpdateHandler, bean, 'enumProperty', 'VALUE_1', null);
+        sinon.assert.calledWith(onBeanUpdateHandler, bean, 'enumProperty', 'VALUE_2', 'VALUE_1');
+        sinon.assert.calledWith(onBeanUpdateHandler, bean, 'enumProperty', null, 'VALUE_2');
     }));
 
     it('can set boolean from user', sinon.test(function(done) {
@@ -597,9 +595,9 @@ describe('ClassRepository Remoting Bean properties', function() {
         propertyChangeListener({oldValue: 'id1', newValue: 'id2'});
         propertyChangeListener({oldValue: 'id2', newValue: null});
         sinon.assert.callCount(onBeanUpdateHandler, 3);
-        sinon.assert.calledWith(onBeanUpdateHandler, 'ComplexClass', bean, 'reference', bean1, null);
-        sinon.assert.calledWith(onBeanUpdateHandler, 'ComplexClass', bean, 'reference', bean2, bean1);
-        sinon.assert.calledWith(onBeanUpdateHandler, 'ComplexClass', bean, 'reference', null,  bean2);
+        sinon.assert.calledWith(onBeanUpdateHandler, bean, 'reference', bean1, null);
+        sinon.assert.calledWith(onBeanUpdateHandler, bean, 'reference', bean2, bean1);
+        sinon.assert.calledWith(onBeanUpdateHandler, bean, 'reference', null,  bean2);
     }));
 
     it('can be set from user', sinon.test(function(done) {
@@ -916,7 +914,7 @@ describe('ClassRepository.mapParamToDolphin()', function() {
         expect(result3).to.be.true;
         expect(result4).to.be.true;
     });
-    it.only('test isBeanOrSubBean for same bean', function() {
+    it('test isBeanOrSubBean for same bean', function() {
         let classRepo = new ClassRepository({});
 
         let bean = {};

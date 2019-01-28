@@ -2958,7 +2958,7 @@ describe('List Sync (replacing objects from OpenDolphin)', function() {
         sinon.assert.calledWith(onArrayUpdateHandler, sourceBean, 'referenceList', 1, 2, [bean1, bean2, bean3]);
     }));
 
-    it.only('should replace multiple entries in middle / at end with less elements', sinon.test(function() {
+    it('should replace multiple entries in middle / at end with less elements', sinon.test(function() {
         let onArrayUpdateHandler = this.spy();
         let model = {
             findAttributeByPropertyName: this.stub()
