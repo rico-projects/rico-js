@@ -132,7 +132,7 @@ describe('Remoting Event Handling', function() {
 
 
 
-    it('should call onAdded-handler for class', sinon.test(function() {
+    it('should call onAdded-handler', sinon.test(function() {
         let bean = {};
         let model = {
             presentationModelType: 'SomeClass',
@@ -141,25 +141,10 @@ describe('Remoting Event Handling', function() {
         };
         let onAddedHandler = this.spy();
 
-        beanManager.onAdded('SomeClass', onAddedHandler);
+        beanManager.onAdded(onAddedHandler);
         onModelStoreChange({ clientPresentationModel: model, eventType: "ADDED" });
 
         sinon.assert.calledWith(onAddedHandler, bean);
-    }));
-
-
-    it('should not call onAdded-handler for other class', sinon.test(function() {
-        let model = {
-            presentationModelType: 'SomeClass',
-            attributes: [],
-            findAttributeByPropertyName: this.stub().withArgs('@@@ SOURCE_SYSTEM @@@').returns({value: 'server'})
-        };
-        let onAddedHandler = this.spy();
-
-        beanManager.onAdded('SomeOtherClass', onAddedHandler);
-        onModelStoreChange({ clientPresentationModel: model, eventType: "ADDED" });
-
-        sinon.assert.notCalled(onAddedHandler);
     }));
 
 
@@ -171,7 +156,7 @@ describe('Remoting Event Handling', function() {
         };
         let onAddedHandler = this.spy();
 
-        beanManager.onAdded('SomeClass', onAddedHandler).unsubscribe();
+        beanManager.onAdded(onAddedHandler).unsubscribe();
         onModelStoreChange({ clientPresentationModel: model, eventType: "ADDED" });
 
         sinon.assert.notCalled(onAddedHandler);
@@ -187,10 +172,10 @@ describe('Remoting Event Handling', function() {
         };
         let innerOnAddedHandler = this.spy();
         let outerOnAddedHandler = function() {
-            beanManager.onAdded('SomeClass', innerOnAddedHandler);
+            beanManager.onAdded(innerOnAddedHandler);
         };
 
-        let subscription = beanManager.onAdded('SomeClass', outerOnAddedHandler);
+        let subscription = beanManager.onAdded(outerOnAddedHandler);
         onModelStoreChange({ clientPresentationModel: model, eventType: "ADDED" });
         subscription.unsubscribe();
         sinon.assert.notCalled(innerOnAddedHandler);
@@ -208,11 +193,11 @@ describe('Remoting Event Handling', function() {
             findAttributeByPropertyName: this.stub().withArgs('@@@ SOURCE_SYSTEM @@@').returns({value: 'server'})
         };
         let innerOnAddedHandler = this.spy();
-        let innerSubscription = beanManager.onAdded('SomeClass', innerOnAddedHandler);
+        let innerSubscription = beanManager.onAdded(innerOnAddedHandler);
         let outerOnAddedHandler = function () {
             innerSubscription.unsubscribe();
         };
-        let outerSubscription = beanManager.onAdded('SomeClass', outerOnAddedHandler);
+        let outerSubscription = beanManager.onAdded(outerOnAddedHandler);
 
         onModelStoreChange({clientPresentationModel: model, eventType: "ADDED"});
         outerSubscription.unsubscribe();
@@ -264,10 +249,10 @@ describe('Remoting Event Handling', function() {
         };
         let innerOnAddedHandler = this.spy();
         let outerOnAddedHandler = function() {
-            beanManager.onAdded('SomeClass', innerOnAddedHandler);
+            beanManager.onAdded(innerOnAddedHandler);
         };
 
-        let subscription = beanManager.onAdded('SomeClass', outerOnAddedHandler);
+        let subscription = beanManager.onAdded(outerOnAddedHandler);
         onModelStoreChange({ clientPresentationModel: model, eventType: "ADDED" });
         subscription.unsubscribe();
         sinon.assert.notCalled(innerOnAddedHandler);
@@ -301,7 +286,7 @@ describe('Remoting Event Handling', function() {
     }));
 
 
-    it('should call onRemoved-handler for class', sinon.test(function() {
+    it('should call onRemoved-handler', sinon.test(function() {
         let bean = {};
         classRepository.beanFromDolphin.get = this.stub().returns(bean);
         let model = {
@@ -310,28 +295,11 @@ describe('Remoting Event Handling', function() {
         };
         let onRemovedHandler = this.spy();
 
-        beanManager.onRemoved('SomeClass', onRemovedHandler);
+        beanManager.onRemoved(onRemovedHandler);
         onModelStoreChange({ clientPresentationModel: model, eventType: "REMOVED" });
 
         sinon.assert.calledWith(onRemovedHandler, bean);
     }));
-
-
-    it('should not call onRemoved-handler for other class', sinon.test(function() {
-        let bean = {};
-        classRepository.beanFromDolphin.get = this.stub().returns(bean);
-        let model = {
-            presentationModelType: 'SomeClass',
-            findAttributeByPropertyName: this.stub().withArgs('@@@ SOURCE_SYSTEM @@@').returns({value: 'server'})
-        };
-        let onRemovedHandler = this.spy();
-
-        beanManager.onRemoved('SomeOtherClass', onRemovedHandler);
-        onModelStoreChange({ clientPresentationModel: model, eventType: "REMOVED" });
-
-        sinon.assert.notCalled(onRemovedHandler);
-    }));
-
 
     it('should not call removed onRemoved-handler', sinon.test(function() {
         let bean = {};
@@ -342,7 +310,7 @@ describe('Remoting Event Handling', function() {
         };
         let onRemovedHandler = this.spy();
 
-        beanManager.onRemoved('SomeClass', onRemovedHandler).unsubscribe();
+        beanManager.onRemoved(onRemovedHandler).unsubscribe();
         onModelStoreChange({ clientPresentationModel: model, eventType: "REMOVED" });
 
         sinon.assert.notCalled(onRemovedHandler);
@@ -358,10 +326,10 @@ describe('Remoting Event Handling', function() {
         };
         let innerOnRemovedHandler = this.spy();
         let outerOnRemovedHandler = function() {
-            beanManager.onRemoved('SomeClass', innerOnRemovedHandler);
+            beanManager.onRemoved(innerOnRemovedHandler);
         };
 
-        let subscription = beanManager.onRemoved('SomeClass', outerOnRemovedHandler);
+        let subscription = beanManager.onRemoved(outerOnRemovedHandler);
         onModelStoreChange({ clientPresentationModel: model, eventType: "REMOVED" });
         subscription.unsubscribe();
         sinon.assert.notCalled(innerOnRemovedHandler);
@@ -379,11 +347,11 @@ describe('Remoting Event Handling', function() {
             findAttributeByPropertyName: this.stub().withArgs('@@@ SOURCE_SYSTEM @@@').returns({value: 'server'})
         };
         let innerOnRemovedHandler = this.spy();
-        let innerSubscription = beanManager.onRemoved('SomeClass', innerOnRemovedHandler);
+        let innerSubscription = beanManager.onRemoved(innerOnRemovedHandler);
         let outerOnRemovedHandler = function () {
             innerSubscription.unsubscribe();
         };
-        let outerSubscription = beanManager.onRemoved('SomeClass', outerOnRemovedHandler);
+        let outerSubscription = beanManager.onRemoved(outerOnRemovedHandler);
 
         onModelStoreChange({clientPresentationModel: model, eventType: "REMOVED"});
         outerSubscription.unsubscribe();

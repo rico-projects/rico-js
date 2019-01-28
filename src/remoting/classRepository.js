@@ -20,6 +20,55 @@ class ClassRepository {
         this.blocked = null;
     }
 
+    _getAllChildBeans(bean) {
+        let result = [];
+        if(bean === null) {
+            return result;
+        }
+
+        let properties = Object.keys(bean);
+        properties.forEach(p => {
+            let value = bean[p];
+            if(value === null) {
+                //Do nothing
+            } else if(Array.isArray(value)) {
+                value.forEach(subValue => {
+                    let id = this.beanToDolphin.get(subValue);
+                    if(id != null) {
+                        result.push(subValue);
+                    }
+                })
+            } else {
+                let id = this.beanToDolphin.get(value);
+                if(id != null) {
+                    result.push(value);
+                }
+            }
+        });
+        return result;
+    }
+
+    isBeanOrSubBean(subBean, bean) {
+        if(subBean === null || bean === null) {
+            return false;
+        }
+
+        let subBeanId = this.beanToDolphin.get(subBean);
+        if(subBeanId === null || typeof subBeanId === "undefined") {
+            return false;
+        }
+        let beanId = this.beanToDolphin.get(bean);
+        if(beanId === null || typeof beanId === "undefined") {
+            return false;
+        }
+        if(subBeanId === beanId) {return true}
+
+        let subBeans = this._getAllChildBeans(bean);
+        return subBeans.map(b => this.isBeanOrSubBean(subBean, b))
+            .filter(v => v)
+            .length > 0;
+    }
+
     sendListSplice(classRepository, modelId, propertyName, from, to, newElements) {
         let dolphin = classRepository.dolphin;
         let model = dolphin.findPresentationModelById(modelId);

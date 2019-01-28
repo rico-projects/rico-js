@@ -8,6 +8,7 @@ import sinonTest from 'sinon-test'
 sinon.test = sinonTest(sinon);
 
 import BeanManager from '../../../src/remoting/beanManager';
+import ClassRepository from '../../../src/remoting/classRepository';
 
 describe('BeanManager', function() {
 
@@ -38,21 +39,6 @@ describe('BeanManager', function() {
         expect(beanManager.allAddedHandlers.length).to.be.equal(1);
     });
 
-    it('register onAdded handler with type', function() {
-
-        const type = 'com.canoo.test.MyBean';
-        const beanManager = new BeanManager(classRepositoryMock);
-        const spy = sinon.spy();
-        const result = beanManager.onAdded(type, spy);
-
-        expect(result).to.exist;
-        expect(result.unsubscribe).to.exist;
-        expect(beanManager.addedHandlers.size).to.be.equal(1);
-        expect(beanManager.addedHandlers.get(type)).to.exist;
-        expect(beanManager.addedHandlers.get(type).length).to.be.equal(1);
-        expect(beanManager.addedHandlers.get(type)[0]).to.be.equal(spy);
-    });
-
     it('unsubscribe onAdded handler', function() {
 
         const beanManager = new BeanManager(classRepositoryMock);
@@ -61,19 +47,6 @@ describe('BeanManager', function() {
         result.unsubscribe();
 
         expect(beanManager.allAddedHandlers.length).to.be.equal(0);
-    });
-
-    it('unsubscribe onAdded handler with type', function() {
-
-        const type = 'com.canoo.test.MyBean';
-        const beanManager = new BeanManager(classRepositoryMock);
-        const spy = sinon.spy();
-        const result = beanManager.onAdded(type, spy);
-        result.unsubscribe();
-
-        expect(beanManager.addedHandlers.size).to.be.equal(1);
-        expect(beanManager.addedHandlers.get(type)).to.exist;
-        expect(beanManager.addedHandlers.get(type).length).to.be.equal(0);
     });
 
     it('register onRemoved handler', function() {
@@ -87,21 +60,6 @@ describe('BeanManager', function() {
         expect(beanManager.allRemovedHandlers.length).to.be.equal(1);
     });
 
-    it('register onRemoved handler with type', function() {
-
-        const type = 'com.canoo.test.MyBean';
-        const beanManager = new BeanManager(classRepositoryMock);
-        const spy = sinon.spy();
-        const result = beanManager.onRemoved(type, spy);
-
-        expect(result).to.exist;
-        expect(result.unsubscribe).to.exist;
-        expect(beanManager.removedHandlers.size).to.be.equal(1);
-        expect(beanManager.removedHandlers.get(type)).to.exist;
-        expect(beanManager.removedHandlers.get(type).length).to.be.equal(1);
-        expect(beanManager.removedHandlers.get(type)[0]).to.be.equal(spy);
-    });
-
     it('unsubscribe onRemoved handler', function() {
 
         const beanManager = new BeanManager(classRepositoryMock);
@@ -112,115 +70,46 @@ describe('BeanManager', function() {
         expect(beanManager.allRemovedHandlers.length).to.be.equal(0);
     });
 
-    it('unsubscribe onRemoved handler with type', function() {
-
-        const type = 'com.canoo.test.MyBean';
-        const beanManager = new BeanManager(classRepositoryMock);
-        const spy = sinon.spy();
-        const result = beanManager.onRemoved(type, spy);
-        result.unsubscribe();
-
-        expect(beanManager.removedHandlers.size).to.be.equal(1);
-        expect(beanManager.removedHandlers.get(type)).to.exist;
-        expect(beanManager.removedHandlers.get(type).length).to.be.equal(0);
-    });
-
     it('register onBeanUpdate handler', function() {
 
         const beanManager = new BeanManager(classRepositoryMock);
         const spy = sinon.spy();
-        const result = beanManager.onBeanUpdate(spy);
+        const result = beanManager.onBeanUpdate(spy, {});
 
         expect(result).to.exist;
         expect(result.unsubscribe).to.exist;
         expect(beanManager.allUpdatedHandlers.length).to.be.equal(1);
     });
 
-    it('register onBeanUpdate handler with type', function() {
-
-        const type = 'com.canoo.test.MyBean';
-        const beanManager = new BeanManager(classRepositoryMock);
-        const spy = sinon.spy();
-        const result = beanManager.onBeanUpdate(type, spy);
-
-        expect(result).to.exist;
-        expect(result.unsubscribe).to.exist;
-        expect(beanManager.updatedHandlers.size).to.be.equal(1);
-        expect(beanManager.updatedHandlers.get(type)).to.exist;
-        expect(beanManager.updatedHandlers.get(type).length).to.be.equal(1);
-        expect(beanManager.updatedHandlers.get(type)[0]).to.be.equal(spy);
-    });
-
     it('unsubscribe onBeanUpdate handler', function() {
 
         const beanManager = new BeanManager(classRepositoryMock);
         const spy = sinon.spy();
-        const result = beanManager.onBeanUpdate(spy);
+        const result = beanManager.onBeanUpdate(spy, {});
         result.unsubscribe();
 
         expect(beanManager.allUpdatedHandlers.length).to.be.equal(0);
-    });
-
-    it('unsubscribe onBeanUpdate handler with type', function() {
-
-        const type = 'com.canoo.test.MyBean';
-        const beanManager = new BeanManager(classRepositoryMock);
-        const spy = sinon.spy();
-        const result = beanManager.onBeanUpdate(type, spy);
-        result.unsubscribe();
-
-        expect(beanManager.updatedHandlers.size).to.be.equal(1);
-        expect(beanManager.updatedHandlers.get(type)).to.exist;
-        expect(beanManager.updatedHandlers.get(type).length).to.be.equal(0);
     });
 
     it('register onArrayUpdate handler', function() {
 
         const beanManager = new BeanManager(classRepositoryMock);
         const spy = sinon.spy();
-        const result = beanManager.onArrayUpdate(spy);
+        const result = beanManager.onArrayUpdate(spy, {});
 
         expect(result).to.exist;
         expect(result.unsubscribe).to.exist;
         expect(beanManager.allArrayUpdatedHandlers.length).to.be.equal(1);
     });
 
-    it('register onArrayUpdate handler with type', function() {
-
-        const type = 'com.canoo.test.MyBean';
-        const beanManager = new BeanManager(classRepositoryMock);
-        const spy = sinon.spy();
-        const result = beanManager.onArrayUpdate(type, spy);
-
-        expect(result).to.exist;
-        expect(result.unsubscribe).to.exist;
-        expect(beanManager.arrayUpdatedHandlers.size).to.be.equal(1);
-        expect(beanManager.arrayUpdatedHandlers.get(type)).to.exist;
-        expect(beanManager.arrayUpdatedHandlers.get(type).length).to.be.equal(1);
-        expect(beanManager.arrayUpdatedHandlers.get(type)[0]).to.be.equal(spy);
-    });
-
     it('unsubscribe onArrayUpdate handler', function() {
 
         const beanManager = new BeanManager(classRepositoryMock);
         const spy = sinon.spy();
-        const result = beanManager.onArrayUpdate(spy);
+        const result = beanManager.onArrayUpdate(spy, {});
         result.unsubscribe();
 
         expect(beanManager.allArrayUpdatedHandlers.length).to.be.equal(0);
-    });
-
-    it('unsubscribe onArrayUpdate handler with type', function() {
-
-        const type = 'com.canoo.test.MyBean';
-        const beanManager = new BeanManager(classRepositoryMock);
-        const spy = sinon.spy();
-        const result = beanManager.onArrayUpdate(type, spy);
-        result.unsubscribe();
-
-        expect(beanManager.arrayUpdatedHandlers.size).to.be.equal(1);
-        expect(beanManager.arrayUpdatedHandlers.get(type)).to.exist;
-        expect(beanManager.arrayUpdatedHandlers.get(type).length).to.be.equal(0);
     });
 
     it('call class repository on bean change', function() {
@@ -255,18 +144,6 @@ describe('BeanManager', function() {
         expect(spy.calledWith({ foo: 'bar' })).to.be.true;
     });
 
-    it('call handler on bean added with type', function() {
-
-        const type = 'com.canoo.test.MyBean';
-        const beanManager = new BeanManager(classRepositoryMock);
-        const spy = sinon.spy();
-        beanManager.onAdded(type, spy);
-        beanManager._handleBeanAdded(type, { foo: 'bar' });
-
-        expect(spy.calledOnce).to.be.true;
-        expect(spy.calledWith({ foo: 'bar' })).to.be.true;
-    });
-
     it('call handler on bean removed', function() {
 
         const type = 'com.canoo.test.MyBean';
@@ -279,37 +156,17 @@ describe('BeanManager', function() {
         expect(spy.calledWith({ foo: 'bar' })).to.be.true;
     });
 
-    it('call handler on bean removed with type', function() {
-
-        const type = 'com.canoo.test.MyBean';
-        const beanManager = new BeanManager(classRepositoryMock);
-        const spy = sinon.spy();
-        beanManager.onRemoved(type, spy);
-        beanManager._handleBeanRemoved(type, { foo: 'bar' });
-
-        expect(spy.calledOnce).to.be.true;
-        expect(spy.calledWith({ foo: 'bar' })).to.be.true;
-    });
-
     it('call handler on bean update', function() {
 
+        const classRepo = new ClassRepository({});
         const type = 'com.canoo.test.MyBean';
-        const beanManager = new BeanManager(classRepositoryMock);
+        const beanManager = new BeanManager(classRepo);
         const spy = sinon.spy();
-        beanManager.onBeanUpdate(spy);
-        beanManager._handleBeanUpdate(type, { foo: 'bar' }, 'foo', 'bar', 'moo');
+        const model = { foo: 'bar' };
 
-        expect(spy.calledOnce).to.be.true;
-        expect(spy.calledWith({ foo: 'bar' }, 'foo', 'bar', 'moo')).to.be.true;
-    });
-
-    it('call handler on bean update with type', function() {
-
-        const type = 'com.canoo.test.MyBean';
-        const beanManager = new BeanManager(classRepositoryMock);
-        const spy = sinon.spy();
-        beanManager.onBeanUpdate(type, spy);
-        beanManager._handleBeanUpdate(type, { foo: 'bar' }, 'foo', 'bar', 'moo');
+        classRepo.beanToDolphin.set(model, 1);
+        beanManager.onBeanUpdate(spy, model);
+        beanManager._handleBeanUpdate(type, model, 'foo', 'bar', 'moo');
 
         expect(spy.calledOnce).to.be.true;
         expect(spy.calledWith({ foo: 'bar' }, 'foo', 'bar', 'moo')).to.be.true;
@@ -317,23 +174,15 @@ describe('BeanManager', function() {
 
     it('call handler on array update', function() {
 
+        const classRepo = new ClassRepository({});
         const type = 'com.canoo.test.MyBean';
-        const beanManager = new BeanManager(classRepositoryMock);
+        const beanManager = new BeanManager(classRepo);
         const spy = sinon.spy();
-        beanManager.onArrayUpdate(spy);
-        beanManager._handleArrayUpdate(type, { foo: ['bar'] }, 'foo', 0, 0, []);
-
-        expect(spy.calledOnce).to.be.true;
-        expect(spy.calledWith({ foo: ['bar'] }, 'foo', 0, 0, [])).to.be.true;
-    });
-
-    it('call handler on array update with type', function() {
-
-        const type = 'com.canoo.test.MyBean';
-        const beanManager = new BeanManager(classRepositoryMock);
-        const spy = sinon.spy();
-        beanManager.onArrayUpdate(type, spy);
-        beanManager._handleArrayUpdate(type, { foo: ['bar'] }, 'foo', 0, 0, []);
+        const model = { foo: ['bar'] };
+        
+        classRepo.beanToDolphin.set(model, 1);
+        beanManager.onArrayUpdate(spy, model);
+        beanManager._handleArrayUpdate(type, model, 'foo', 0, 0, []);
 
         expect(spy.calledOnce).to.be.true;
         expect(spy.calledWith({ foo: ['bar'] }, 'foo', 0, 0, [])).to.be.true;
