@@ -142,12 +142,12 @@ describe('CommandFactory', function () {
                     getValue: () => null
                 }
             ],
-            presentationModelType: "com.canoo.icos.casemanager.model.casedetails.CaseInfoBean"
+            presentationModelType: "com.canoo.icos.casemanager.modelBean.casedetails.CaseInfoBean"
         };
         const command = CommandFactory.createCreatePresentationModelCommand(model);
 
         expect(command).to.be.instanceOf(CreatePresentationModelCommand);
-        expect(command.pmType).to.be.equal('com.canoo.icos.casemanager.model.casedetails.CaseInfoBean');
+        expect(command.pmType).to.be.equal('com.canoo.icos.casemanager.modelBean.casedetails.CaseInfoBean');
         expect(command.pmId).to.be.equal('05ee43b7-a884-4d42-9fc5-00b083664eed');
         expect(command.clientSideOnly).to.be.equal(false);
         expect(command.attributes.length).to.be.equal(5);

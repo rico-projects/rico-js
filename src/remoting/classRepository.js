@@ -20,6 +20,55 @@ class ClassRepository {
         this.blocked = null;
     }
 
+    _getAllChildBeans(bean) {
+        let result = [];
+        if(bean === null) {
+            return result;
+        }
+
+        let properties = Object.keys(bean);
+        properties.forEach(p => {
+            let value = bean[p];
+            if(value === null) {
+                //Do nothing
+            } else if(Array.isArray(value)) {
+                value.forEach(subValue => {
+                    let id = this.beanToDolphin.get(subValue);
+                    if(id != null) {
+                        result.push(subValue);
+                    }
+                })
+            } else {
+                let id = this.beanToDolphin.get(value);
+                if(id != null) {
+                    result.push(value);
+                }
+            }
+        });
+        return result;
+    }
+
+    isBeanOrSubBean(subBean, bean) {
+        if(subBean === null || bean === null) {
+            return false;
+        }
+
+        let subBeanId = this.beanToDolphin.get(subBean);
+        if(subBeanId === null || typeof subBeanId === "undefined") {
+            return false;
+        }
+        let beanId = this.beanToDolphin.get(bean);
+        if(beanId === null || typeof beanId === "undefined") {
+            return false;
+        }
+        if(subBeanId === beanId) {return true}
+
+        let subBeans = this._getAllChildBeans(bean);
+        return subBeans.map(b => this.isBeanOrSubBean(subBean, b))
+            .filter(v => v)
+            .length > 0;
+    }
+
     sendListSplice(classRepository, modelId, propertyName, from, to, newElements) {
         let dolphin = classRepository.dolphin;
         let model = dolphin.findPresentationModelById(modelId);
@@ -140,8 +189,8 @@ class ClassRepository {
     }
 
     registerClass(model) {
-        checkMethod('ClassRepository.registerClass(model)');
-        checkParam(model, 'model');
+        checkMethod('ClassRepository.registerClass(modelBean)');
+        checkParam(model, 'modelBean');
 
         if (this.classes.has(model.id)) {
             return;
@@ -157,14 +206,14 @@ class ClassRepository {
     }
 
     unregisterClass(model) {
-        checkMethod('ClassRepository.unregisterClass(model)');
-        checkParam(model, 'model');
+        checkMethod('ClassRepository.unregisterClass(modelBean)');
+        checkParam(model, 'modelBean');
         this.classes['delete'](model.id);
     }
 
     load(model) {
-        checkMethod('ClassRepository.load(model)');
-        checkParam(model, 'model');
+        checkMethod('ClassRepository.load(modelBean)');
+        checkParam(model, 'modelBean');
 
         let self = this;
         let classInfo = this.classes.get(model.presentationModelType);
@@ -177,9 +226,11 @@ class ClassRepository {
                 if (event.oldValue !== event.newValue) {
                     let oldValue = ClassRepository.fromDolphin(self, classInfo[attribute.propertyName], event.oldValue);
                     let newValue = ClassRepository.fromDolphin(self, classInfo[attribute.propertyName], event.newValue);
+                    bean[attribute.propertyName] = newValue;
+
                     self.propertyUpdateHandlers.forEach((handler) => {
                         try {
-                            handler(model.presentationModelType, bean, attribute.propertyName, newValue, oldValue);
+                            handler(bean, attribute.id, attribute.propertyName, newValue, oldValue);
                         } catch (e) {
                             ClassRepository.LOGGER.error('An exception occurred while calling an onBeanUpdate-handler', e);
                         }
@@ -192,7 +243,7 @@ class ClassRepository {
         this.classInfos.set(model.id, classInfo);
         this.beanAddedHandlers.forEach((handler) => {
             try {
-                handler(model.presentationModelType, bean);
+                handler(bean);
             } catch (e) {
                 ClassRepository.LOGGER.error('An exception occurred while calling an onBeanAdded-handler', e);
             }
@@ -201,8 +252,8 @@ class ClassRepository {
     }
 
     unload(model) {
-        checkMethod('ClassRepository.unload(model)');
-        checkParam(model, 'model');
+        checkMethod('ClassRepository.unload(modelBean)');
+        checkParam(model, 'modelBean');
 
         let bean = this.beanFromDolphin.get(model.id);
         this.beanFromDolphin['delete'](model.id);
@@ -211,7 +262,7 @@ class ClassRepository {
         if (exists(bean)) {
             this.beanRemovedHandlers.forEach((handler) => {
                 try {
-                    handler(model.presentationModelType, bean);
+                    handler(bean);
                 } catch (e) {
                     ClassRepository.LOGGER.error('An exception occurred while calling an onBeanRemoved-handler', e);
                 }
@@ -221,8 +272,8 @@ class ClassRepository {
     }
 
     spliceListEntry(model) {
-        checkMethod('ClassRepository.spliceListEntry(model)');
-        checkParam(model, 'model');
+        checkMethod('ClassRepository.spliceListEntry(modelBean)');
+        checkParam(model, 'modelBean');
 
         let source = model.findAttributeByPropertyName('source');
         let attribute = model.findAttributeByPropertyName('attribute');
@@ -250,7 +301,7 @@ class ClassRepository {
                     this.block(bean, attribute.value);
                     this.arrayUpdateHandlers.forEach((handler) => {
                         try {
-                            handler(type, bean, attribute.value, from.value, to.value - from.value, newElements);
+                            handler(bean, attribute.value, from.value, to.value - from.value, newElements);
                         } catch (e) {
                             ClassRepository.LOGGER.error('An exception occurred while calling an onArrayUpdate-handler', e);
                         }

@@ -107,7 +107,7 @@ export default class ClientConnector {
 
     handleCreatePresentationModelCommand(serverCommand) {
         if (this.clientDolphin.getClientModelStore().containsPresentationModel(serverCommand.pmId)) {
-            throw new Error("There already is a presentation model with id " + serverCommand.pmId + "  known to the client.");
+            throw new Error("There already is a presentation modelBean with id " + serverCommand.pmId + "  known to the client.");
         }
         let attributes = [];
         serverCommand.attributes.forEach((attr) => {

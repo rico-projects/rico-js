@@ -20,7 +20,7 @@ export default class ClientAttribute {
 
     setPresentationModel(presentationModel) {
         if (this.presentationModel) {
-            throw new Error("You can not set a presentation model for an attribute that is already bound.");
+            throw new Error("You can not set a presentation modelBean for an attribute that is already bound.");
         }
         this.presentationModel = presentationModel;
     }

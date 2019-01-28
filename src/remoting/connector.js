@@ -46,8 +46,8 @@ export default class Connector{
     }
 
     onModelAdded(model) {
-        checkMethod('Connector.onModelAdded(model)');
-        checkParam(model, 'model');
+        checkMethod('Connector.onModelAdded(modelBean)');
+        checkParam(model, 'modelBean');
 
         var type = model.presentationModelType;
         switch (type) {
@@ -71,8 +71,8 @@ export default class Connector{
     }
 
     onModelRemoved(model) {
-        checkMethod('Connector.onModelRemoved(model)');
-        checkParam(model, 'model');
+        checkMethod('Connector.onModelRemoved(modelBean)');
+        checkParam(model, 'modelBean');
         let type = model.presentationModelType;
         switch (type) {
             case DOLPHIN_BEAN:

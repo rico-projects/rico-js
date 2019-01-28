@@ -742,4 +742,187 @@ describe('ClassRepository.mapParamToDolphin()', function() {
         let classRepo = new ClassRepository({});
         expect(function() {classRepo.mapParamToDolphin(function() {});}).to.throw(TypeError);
     });
+    it('test _getAllChildBeans for null', function() {
+        let classRepo = new ClassRepository({});
+        let result = classRepo._getAllChildBeans(null);
+        expect(result).to.eql([]);
+    });
+    it('test _getAllChildBeans for empty', function() {
+        let classRepo = new ClassRepository({});
+        let rootBean = {};
+        let result = classRepo._getAllChildBeans(rootBean);
+        expect(result).to.eql([]);
+    });
+    it('test _getAllChildBeans for plain', function() {
+        let classRepo = new ClassRepository({});
+        let rootBean = {a: "huhu", b: 123, c: null};
+        let result = classRepo._getAllChildBeans(rootBean);
+        expect(result).to.eql([]);
+    });
+    it('test _getAllChildBeans for subBean', function() {
+        let classRepo = new ClassRepository({});
+
+        let subBean = {};
+        let rootBean = {sub:subBean};
+        classRepo.beanToDolphin.set(subBean, 1);
+        classRepo.beanToDolphin.set(rootBean, 2);
+
+        let result = classRepo._getAllChildBeans(rootBean);
+        expect(result).to.eql([subBean]);
+    });
+    it('test _getAllChildBeans for array', function() {
+        let classRepo = new ClassRepository({});
+
+        let subBean1 = {};
+        let subBean2 = {};
+        let rootBean = {sub:[subBean1, subBean2]};
+        classRepo.beanToDolphin.set(subBean1, 1);
+        classRepo.beanToDolphin.set(subBean2, 2);
+        classRepo.beanToDolphin.set(rootBean, 3);
+
+        let result = classRepo._getAllChildBeans(rootBean);
+        expect(result).to.eql([subBean1, subBean2]);
+    });
+    it('test _getAllChildBeans for complex bean', function() {
+        let classRepo = new ClassRepository({});
+
+        let subBean1 = {};
+        let subBean2 = {};
+        let subBean3 = {};
+        let rootBean = {sub:[subBean1, subBean2], b: subBean3, prim: "HUHU", n: null};
+        classRepo.beanToDolphin.set(subBean1, 1);
+        classRepo.beanToDolphin.set(subBean2, 2);
+        classRepo.beanToDolphin.set(subBean3, 3);
+        classRepo.beanToDolphin.set(rootBean, 100);
+
+        let result = classRepo._getAllChildBeans(rootBean);
+        expect(result.length).to.eql(3);
+        expect(result.includes(subBean1)).to.be.true;
+        expect(result.includes(subBean2)).to.be.true;
+        expect(result.includes(subBean3)).to.be.true;
+    });
+
+
+    it('test isBeanOrSubBean for null - null', function() {
+        let classRepo = new ClassRepository({});
+        let result = classRepo.isBeanOrSubBean(null, null);
+        expect(result).to.be.false;
+    });
+    it('test isBeanOrSubBean for any - null', function() {
+        let classRepo = new ClassRepository({});
+        let result = classRepo.isBeanOrSubBean({}, null);
+        expect(result).to.be.false;
+    });
+    it('test isBeanOrSubBean for null - any', function() {
+        let classRepo = new ClassRepository({});
+        let result = classRepo.isBeanOrSubBean(null, {});
+        expect(result).to.be.false;
+    });
+    it('test isBeanOrSubBean for any - any', function() {
+        let classRepo = new ClassRepository({});
+        let result = classRepo.isBeanOrSubBean({}, {});
+        expect(result).to.be.false;
+    });
+    it('test isBeanOrSubBean for non-SubBean', function() {
+        let classRepo = new ClassRepository({});
+
+        let subBean1 = {};
+        let rootBean = {any:null};
+        classRepo.beanToDolphin.set(subBean1, 1);
+        classRepo.beanToDolphin.set(rootBean, 100);
+
+        let result = classRepo.isBeanOrSubBean(subBean1, rootBean);
+        expect(result).to.be.false;
+    });
+    it('test isBeanOrSubBean for SubBean', function() {
+        let classRepo = new ClassRepository({});
+
+        let subBean1 = {};
+        let rootBean = {child:subBean1};
+        classRepo.beanToDolphin.set(subBean1, 1);
+        classRepo.beanToDolphin.set(rootBean, 100);
+
+        let result = classRepo.isBeanOrSubBean(subBean1, rootBean);
+        expect(result).to.be.true;
+    });
+    it('test isBeanOrSubBean for deep SubBean', function() {
+        let classRepo = new ClassRepository({});
+
+        let subBean1 = {};
+        let subBean2 = {c:subBean1};
+        let subBean3 = {c:subBean2};
+        let subBean4 = { c:subBean3};
+        let rootBean = {child:subBean4};
+        classRepo.beanToDolphin.set(subBean1, 1);
+        classRepo.beanToDolphin.set(subBean2, 2);
+        classRepo.beanToDolphin.set(subBean3, 3);
+        classRepo.beanToDolphin.set(subBean4, 4);
+        classRepo.beanToDolphin.set(rootBean, 100);
+
+        let result = classRepo.isBeanOrSubBean(subBean1, rootBean);
+        expect(result).to.be.true;
+    });
+    it('test isBeanOrSubBean for array', function() {
+        let classRepo = new ClassRepository({});
+
+        let subBean1 = {};
+        let subBean2 = {};
+        let rootBean = {children:[subBean1, subBean2]};
+        classRepo.beanToDolphin.set(subBean1, 1);
+        classRepo.beanToDolphin.set(subBean2, 2);
+        classRepo.beanToDolphin.set(rootBean, 100);
+
+        let result = classRepo.isBeanOrSubBean(subBean2, rootBean);
+        expect(result).to.be.true;
+    });
+    it('test isBeanOrSubBean for deep array', function() {
+        let classRepo = new ClassRepository({});
+
+        let subBean1 = {};
+        let subBean2 = {};
+        let subBean3 = {c:[subBean2, subBean1]};
+        let subBean4 = {c:subBean3};
+        let rootBean = {c:subBean4};
+        classRepo.beanToDolphin.set(subBean1, 1);
+        classRepo.beanToDolphin.set(subBean2, 2);
+        classRepo.beanToDolphin.set(subBean3, 3);
+        classRepo.beanToDolphin.set(subBean4, 4);
+        classRepo.beanToDolphin.set(rootBean, 100);
+
+        let result = classRepo.isBeanOrSubBean(subBean1, rootBean);
+        expect(result).to.be.true;
+    });
+    it('test isBeanOrSubBean for not attached bean', function() {
+        let classRepo = new ClassRepository({});
+
+        let subBean1 = {};
+        let subBean2 = {};
+        let subBean3 = {c:subBean2};
+        let subBean4 = {c:subBean3};
+        let rootBean = {c:subBean4};
+        classRepo.beanToDolphin.set(subBean1, 1);
+        classRepo.beanToDolphin.set(subBean2, 2);
+        classRepo.beanToDolphin.set(subBean3, 3);
+        classRepo.beanToDolphin.set(subBean4, 4);
+        classRepo.beanToDolphin.set(rootBean, 100);
+
+        let result1 = classRepo.isBeanOrSubBean(subBean1, rootBean);
+        let result2 = classRepo.isBeanOrSubBean(subBean2, rootBean);
+        let result3 = classRepo.isBeanOrSubBean(subBean3, rootBean);
+        let result4 = classRepo.isBeanOrSubBean(subBean4, rootBean);
+
+        expect(result1).to.be.false;
+        expect(result2).to.be.true;
+        expect(result3).to.be.true;
+        expect(result4).to.be.true;
+    });
+    it.only('test isBeanOrSubBean for same bean', function() {
+        let classRepo = new ClassRepository({});
+
+        let bean = {};
+        classRepo.beanToDolphin.set(bean, 1);
+
+        let result = classRepo.isBeanOrSubBean(bean, bean);
+        expect(result).to.be.true;
+    });
 });

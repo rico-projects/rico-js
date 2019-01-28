@@ -30,7 +30,7 @@ const commandDef = {
                 "value": null
             }
         ],
-        "pmType": "com.canoo.icos.casemanager.model.casedetails.CaseInfoBean"
+        "pmType": "com.canoo.icos.casemanager.modelBean.casedetails.CaseInfoBean"
     },
     CreateContext: {
         "id":"CreateContext"
@@ -94,7 +94,7 @@ const commandDef = {
 }
 
 const resultDef = {
-    CreatePresentationModel:  '{"id":"CreatePresentationModel","p_id":"05ee43b7-a884-4d42-9fc5-00b083664eed","t":"com.canoo.icos.casemanager.model.casedetails.CaseInfoBean","a":[{"n":"@@@ SOURCE_SYSTEM @@@","a_id":"3204S","v":"server"},{"n":"caseDetailsLabel","a_id":"3205S"},{"n":"caseIdLabel","a_id":"3206S"},{"n":"statusLabel","a_id":"3207S"},{"n":"status","a_id":"3208S"}]}',
+    CreatePresentationModel:  '{"id":"CreatePresentationModel","p_id":"05ee43b7-a884-4d42-9fc5-00b083664eed","t":"com.canoo.icos.casemanager.modelBean.casedetails.CaseInfoBean","a":[{"n":"@@@ SOURCE_SYSTEM @@@","a_id":"3204S","v":"server"},{"n":"caseDetailsLabel","a_id":"3205S"},{"n":"caseIdLabel","a_id":"3206S"},{"n":"statusLabel","a_id":"3207S"},{"n":"status","a_id":"3208S"}]}',
     CreateContext: '{"id":"CreateContext"}',
     CreateController: '{"id":"CreateController","n":"ToDoController","c_id":"myId"}',
     LongPoll: '{"id":"StartLongPoll"}',

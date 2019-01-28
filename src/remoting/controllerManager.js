@@ -10,7 +10,7 @@ import { SOURCE_SYSTEM_CLIENT } from './connector.js';
 import { ACTION_CALL_BEAN } from './connector.js';
 
 const CONTROLLER_ID = 'controllerId';
-const MODEL = 'model';
+const MODEL = 'modelBean';
 const ERROR_CODE = 'errorCode';
 
 export default class ControllerManager {
@@ -57,7 +57,7 @@ export default class ControllerManager {
                         .then((modelId) => {
                             return self.getValueWithRetry(
                                 () => self.classRepository.mapDolphinToBean(modelId),
-                                'Could not get an model from classRepository for ID: ' + modelId
+                                'Could not get an modelBean from classRepository for ID: ' + modelId
                             );
                         })
                         .then((model) => {
@@ -77,7 +77,6 @@ export default class ControllerManager {
             });
         });
     }
-
 
     getValueWithRetry(getValueCall, errorMessage) {
         return new Promise((resolve, reject) => {

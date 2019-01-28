@@ -3,21 +3,21 @@ import { LoggerFactory } from '../logging';
 
 export default class ControllerProxy {
 
-    constructor(controllerId, model, manager){
-        checkMethod('ControllerProxy(controllerId, model, manager)');
+    constructor(controllerId, modelBean, controllerManager){
+        checkMethod('ControllerProxy(controllerId, modelBean, controllerManager)');
         checkParam(controllerId, 'controllerId');
-        checkParam(model, 'model');
-        checkParam(manager, 'manager');
+        checkParam(modelBean, 'modelBean');
+        checkParam(controllerManager, 'controllerManager');
 
         this.controllerId = controllerId;
-        this.model = model;
-        this.manager = manager;
+        this.modelBean = modelBean;
+        this.controllerManager = controllerManager;
         this.destroyed = false;
         this.onDestroyedHandlers = new Set();
     }
 
     getModel() {
-        return this.model;
+        return this.modelBean;
     }
 
     getId() {
@@ -31,11 +31,11 @@ export default class ControllerProxy {
         if (this.destroyed) {
             throw new Error('The controller was already destroyed');
         }
-        return this.manager.invokeAction(this.controllerId, name, params);
+        return this.controllerManager.invokeAction(this.controllerId, name, params);
     }
 
     createController(name) {
-        return this.manager._createController(name, this.getId());
+        return this.controllerManager._createController(name, this.getId());
     }
 
     destroy(){
@@ -50,7 +50,7 @@ export default class ControllerProxy {
                 ControllerProxy.LOGGER.error('An exception occurred while calling an onDestroyed-handler', e);
             }
         }, this);
-        return this.manager.destroyController(this);
+        return this.controllerManager.destroyController(this);
     }
 
     onDestroyed(handler){

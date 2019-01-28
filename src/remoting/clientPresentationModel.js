@@ -18,7 +18,7 @@ export default class ClientPresentationModel {
         this.invalidBus = new EventBus();
         this.dirtyValueChangeBus = new EventBus();
     }
-    // todo dk: align with Java version: move to ClientDolphin and auto-add to model store
+    // todo dk: align with Java version: move to ClientDolphin and auto-add to modelBean store
     /** a copy constructor for anything but IDs. Per default, copies are client side only, no automatic update applies. */
     copy() {
         var result = new ClientPresentationModel(null, this.presentationModelType);
@@ -43,11 +43,11 @@ export default class ClientPresentationModel {
         }
         if (this.findAttributeByPropertyName(attribute.propertyName)) {
             throw new Error("There already is an attribute with property name: " + attribute.propertyName
-                + " in presentation model with id: " + this.id);
+                + " in presentation modelBean with id: " + this.id);
         }
         if (attribute.getQualifier() && this.findAttributeByQualifier(attribute.getQualifier())) {
             throw new Error("There already is an attribute with qualifier: " + attribute.getQualifier()
-                + " in presentation model with id: " + this.id);
+                + " in presentation modelBean with id: " + this.id);
         }
         attribute.setPresentationModel(this);
         this.attributes.push(attribute);
