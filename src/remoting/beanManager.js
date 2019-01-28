@@ -141,9 +141,18 @@ export default class BeanManager {
     isManaged(bean) {
         checkMethod('BeanManager.isManaged(bean)');
         checkParam(bean, 'bean');
-
-        // TODO: Implement dolphin.isManaged() [DP-7]
-        throw new Error("Not implemented yet");
+    
+        if (bean === null) {
+            return false;
+        }
+    
+        const result = this.classRepository.beanToDolphin.get(bean);
+    
+        if (result === null) {
+            return false;
+        }
+        
+        return true;
     }
 
 
