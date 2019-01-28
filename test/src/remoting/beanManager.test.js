@@ -190,7 +190,7 @@ describe('BeanManager', function() {
 
     describe('not implemented yet', function() {
 
-        it('isManaged', function() {
+        it.skip('isManaged', function() {
 
             const beanManager = new BeanManager(classRepositoryMock);
     
