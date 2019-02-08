@@ -13,7 +13,7 @@
     "build": "npx webpack",
     "build:install": "npm install && npm run build",
     "test": "npm run test:mocha",
-    "test:mocha": "npx mocha test/src --recursive --require @babel/register --require jsdom-global/register",
+    "test:mocha": "npx mocha test/src --recursive --require mocha-babel.js --require jsdom-global/register",
     "test:serve": "set NODE_ENV=DEV && npx webpack-dev-server --env.dev",
     "test:coverage": "npx nyc --reporter=lcov --reporter=html --reporter=text mocha test/src --recursive --require @babel/register --require jsdom-global/register",
     "test:mutation": "npx stryker run",
