@@ -325,11 +325,9 @@ ClassRepository.fromDolphin = function(classRepository, type, value) {
         case consts.CALENDAR:
             return new Date(String(value));
         case consts.LOCAL_DATE_FIELD_TYPE:
-            return new Date(String(value));
         case consts.LOCAL_DATE_TIME_FIELD_TYPE:
-            return new Date(String(value));
         case consts.ZONED_DATE_TIME_FIELD_TYPE:
-            return new Date(String(value));
+            return String(value);
         default:
             return ClassRepository.fixType(type, value);
     }
@@ -347,9 +345,7 @@ ClassRepository.toDolphin = function(classRepository, type, value) {
         case consts.CALENDAR:
             return value instanceof Date ? value.toISOString() : value;
         case consts.LOCAL_DATE_FIELD_TYPE:
-            return value instanceof Date ? value.toISOString() : value;
         case consts.LOCAL_DATE_TIME_FIELD_TYPE:
-            return value instanceof Date ? value.toISOString() : value;
         case consts.ZONED_DATE_TIME_FIELD_TYPE:
             return value instanceof Date ? value.toISOString() : value;
         default:
