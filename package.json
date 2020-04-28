@@ -12,8 +12,10 @@
   },
   "homepage": "https://github.com/rico-project/rico-js#readme",
   "directories": {
+    "lib": "dist",
     "test": "test"
   },
+  "files": ["dist/*", "LICENSE"],
   "author": "rico-projects",
   "contributors": [
     "Michael Heinrichs <michael.heinrichs@karakun.com>",
