@@ -1,10 +1,21 @@
 .DS_Store
 
-.idea
+# Idea
+.idea/
 *iml
 
-.nyc_output/
+# Gradle
+.gradle
+.gradletasknamecache
+build/
+
+# Javascript
+node/
 node_modules/
+dev/
 coverage/
+.nyc_output/
 .stryker-tmp/
 reports/
+
+npm-debug.log

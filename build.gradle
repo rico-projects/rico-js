@@ -1,0 +1,45 @@
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.moowork.gradle:gradle-node-plugin:1.3.1"
+    }
+}
+
+plugins {
+    id "base"
+    id "com.github.node-gradle.node" version "2.2.3"
+}
+
+node {
+    version = '12.16.2'      // Version of node to use.
+    npmVersion = '6.14.4'   // Version of npm to use.
+    distBaseUrl = 'https://nodejs.org/dist'
+    download = true
+    // Set the work directory for unpacking node
+    workDir = file("${project.projectDir}/node/")
+    // Set the work directory where node_modules should be located
+    nodeModulesDir = file("${project.projectDir}")
+}
+
+
+task cleanJsBuildFiles() {
+    doLast {
+        ['dist'].each { dir ->
+            delete "${project.projectDir}/" + dir
+        }
+    }
+}
+
+task cleanAllJsDependencies(dependsOn: ['cleanJsBuildFiles']) {
+    doLast {
+        ['node_modules', 'node'].each { dir ->
+            delete "${project.projectDir}/" + dir
+        }
+    }
+}
+
+npm_run_build.dependsOn 'npmInstall'
+clean.dependsOn cleanJsBuildFiles
