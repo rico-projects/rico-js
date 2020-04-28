@@ -8,12 +8,10 @@
 .gradle
 .gradletasknamecache
 build/
-dist/
 
 # Javascript
 node/
 node_modules/
-dist/
 dev/
 coverage/
 .nyc_output/
