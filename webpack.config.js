@@ -1,8 +1,7 @@
 const fs = require("fs");
 const path = require('path');
 const webpack = require('webpack');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-
+const TerserPlugin = require('terser-webpack-plugin');
 const banner = fs.readFileSync('./banner.txt', "utf8");
 
 function config(env) {
@@ -53,8 +52,7 @@ function config(env) {
             }],
         },
         optimization: {
-            minimizer: [
-            new UglifyJsPlugin({
+            minimizer: [new TerserPlugin({
                 test:/\.min\.js$/i,
                 sourceMap: true
             }),
