@@ -2,7 +2,7 @@
   "name": "@rico-projects/rico-js",
   "version": "1.0.1",
   "description": "JavaScript API of Rico",
-  "main": "./dist/rico.min.js",
+  "main": "lib/rico.min.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rico-project/rico-js.git"
@@ -12,10 +12,10 @@
   },
   "homepage": "https://github.com/rico-project/rico-js#readme",
   "directories": {
-    "lib": "dist",
+    "lib": "lib",
     "test": "test"
   },
-  "files": ["dist/*", "LICENSE"],
+  "files": ["lib/*"],
   "author": "rico-projects",
   "contributors": [
     "Michael Heinrichs <michael.heinrichs@karakun.com>",

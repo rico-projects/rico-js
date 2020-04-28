@@ -28,7 +28,7 @@ function config(env) {
         },
         devtool: 'source-map',
         output: {
-            path: path.resolve(__dirname, 'dist'),
+            path: path.resolve(__dirname, 'lib'),
             filename: '[name].js',
             library: 'ricojs',
             libraryTarget: 'umd'
@@ -37,7 +37,7 @@ function config(env) {
             contentBase: path.join(__dirname, "./test"),
             index: 'index.html',
             port: 8080,
-            publicPath: "/dist/",
+            publicPath: "/lib/",
             hot: true
         },
         resolve: {
