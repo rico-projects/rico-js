@@ -1,12 +1,30 @@
 {
-  "name": "rico-js",
+  "name": "@rico-projects/rico-js",
   "version": "1.0.1",
   "description": "JavaScript API of Rico",
   "main": "./dist/rico.min.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rico-project/rico-js"
+    "url": "git+https://github.com/rico-project/rico-js.git"
   },
+  "bugs": {
+    "url": "https://github.com/rico-project/rico-js/issues"
+  },
+  "homepage": "https://github.com/rico-project/rico-js#readme",
+  "directories": {
+    "test": "test"
+  },
+  "author": "rico-projects",
+  "contributors": [
+    "Michael Heinrichs <michael.heinrichs@karakun.com>",
+    "Hendrik Ebbers <hendrik.ebbers@karakun.com>",
+    "Kunal Singh <kunal.s.rathor@gmail.com>",
+    "Timo Brandstätter <timo.brandstaetter@karakun.com>",
+    "Simon Skoczylas <simon.skoczylas@karakun.com>",
+    "Stephan Classen <stephan.classen@karakun.com>",
+    "Jochen Theodorou <jochen.theodorou@karakun.com>"
+  ],
+  "license": "Apache-2.0",
   "scripts": {
     "clean": "npx rimraf dist/ coverage/ .nyc_output/ .stryker-tmp/ reports/",
     "clean:all": "npx rimraf node_modules/ dist/ coverage/ .nyc_output/ .stryker-tmp/ reports/",
@@ -20,14 +38,6 @@
     "coverage": "npx nyc report --reporter=lcov --reporter=html --reporter=text",
     "coveralls": "npx nyc report --reporter=text-lcov | coveralls"
   },
-  "contributors": [
-    "Michael Heinrichs <michael.heinrichs@karakun.com>",
-    "Hendrik Ebbers <hendrik.ebbers@karakun.com>",
-    "Kunal Singh <kunal.s.rathor@gmail.com>",
-    "Timo Brandstätter <timo.brandstaetter@karakun.com>",
-    "Simon Skoczylas <simon.skoczylas@karakun.com>"
-  ],
-  "license": "Apache-2.0",
   "devDependencies": {
     "@babel/cli": "7.8.4",
     "@babel/core": "7.9.0",
