@@ -1,6 +1,6 @@
 {
   "name": "@rico-projects/rico-js",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "JavaScript API of Rico",
   "main": "lib/rico.min.js",
   "repository": {
