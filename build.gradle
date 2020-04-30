@@ -41,5 +41,6 @@ task cleanAllJsDependencies(dependsOn: ['cleanJsBuildFiles']) {
     }
 }
 
+npm_test.dependsOn 'npmInstall'
 npm_run_build.dependsOn 'npmInstall'
 clean.dependsOn cleanJsBuildFiles
