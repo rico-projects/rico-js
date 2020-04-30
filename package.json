@@ -41,7 +41,7 @@
     "test:mutation": "npx stryker run",
     "coverage": "npx nyc report --reporter=lcov --reporter=html --reporter=text",
     "coveralls": "npx nyc report --reporter=text-lcov | coveralls",
-    "release": "npx release-it --dry-run"
+    "release": "npx release-it patch --dry-run"
   },
   "devDependencies": {
     "@babel/cli": "7.8.4",
