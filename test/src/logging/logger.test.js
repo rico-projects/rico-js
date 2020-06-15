@@ -81,11 +81,11 @@ describe('Logger', function() {
         logger.setLogLevel(LogLevel.DEBUG);
 
         // then:
-        expect(logger.isLogLevelUseable(LogLevel.ERROR)).to.be.true;
-        expect(logger.isLogLevelUseable(LogLevel.WARN)).to.be.true;
-        expect(logger.isLogLevelUseable(LogLevel.INFO)).to.be.true;
-        expect(logger.isLogLevelUseable(LogLevel.DEBUG)).to.be.true;
-        expect(logger.isLogLevelUseable(LogLevel.TRACE)).to.be.false;
+        expect(logger.isLogLevelUsable(LogLevel.ERROR)).to.be.true;
+        expect(logger.isLogLevelUsable(LogLevel.WARN)).to.be.true;
+        expect(logger.isLogLevelUsable(LogLevel.INFO)).to.be.true;
+        expect(logger.isLogLevelUsable(LogLevel.DEBUG)).to.be.true;
+        expect(logger.isLogLevelUsable(LogLevel.TRACE)).to.be.false;
     });
 
     it('Is correct LogLevel useable', function() {
@@ -96,11 +96,11 @@ describe('Logger', function() {
         logger.setLogLevel(LogLevel.ERROR);
 
         // then:
-        expect(logger.isLogLevelUseable(LogLevel.ERROR)).to.be.true;
-        expect(logger.isLogLevelUseable(LogLevel.WARN)).to.be.false;
-        expect(logger.isLogLevelUseable(LogLevel.INFO)).to.be.false;
-        expect(logger.isLogLevelUseable(LogLevel.DEBUG)).to.be.false;
-        expect(logger.isLogLevelUseable(LogLevel.TRACE)).to.be.false;
+        expect(logger.isLogLevelUsable(LogLevel.ERROR)).to.be.true;
+        expect(logger.isLogLevelUsable(LogLevel.WARN)).to.be.false;
+        expect(logger.isLogLevelUsable(LogLevel.INFO)).to.be.false;
+        expect(logger.isLogLevelUsable(LogLevel.DEBUG)).to.be.false;
+        expect(logger.isLogLevelUsable(LogLevel.TRACE)).to.be.false;
     });
 
     it('Is correct LogLevel useable', function() {
@@ -111,11 +111,11 @@ describe('Logger', function() {
         logger.setLogLevel(LogLevel.ALL);
 
         // then:
-        expect(logger.isLogLevelUseable(LogLevel.ERROR)).to.be.true;
-        expect(logger.isLogLevelUseable(LogLevel.WARN)).to.be.true;
-        expect(logger.isLogLevelUseable(LogLevel.INFO)).to.be.true;
-        expect(logger.isLogLevelUseable(LogLevel.DEBUG)).to.be.true;
-        expect(logger.isLogLevelUseable(LogLevel.TRACE)).to.be.true;
+        expect(logger.isLogLevelUsable(LogLevel.ERROR)).to.be.true;
+        expect(logger.isLogLevelUsable(LogLevel.WARN)).to.be.true;
+        expect(logger.isLogLevelUsable(LogLevel.INFO)).to.be.true;
+        expect(logger.isLogLevelUsable(LogLevel.DEBUG)).to.be.true;
+        expect(logger.isLogLevelUsable(LogLevel.TRACE)).to.be.true;
     });
 
     it('Log debug message', sinon.test(function() {

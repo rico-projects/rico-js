@@ -43,7 +43,7 @@ export default class PlatformHttpTransmitter {
             if (this.client) {
                 const encodedCommands = Codec.encode(commands);
 
-                if (PlatformHttpTransmitter.LOGGER.isLogLevelUseable(LogLevel.DEBUG) && !PlatformHttpTransmitter.LOGGER.isLogLevelUseable(LogLevel.TRACE)) {
+                if (PlatformHttpTransmitter.LOGGER.isLogLevelUsable(LogLevel.DEBUG) && !PlatformHttpTransmitter.LOGGER.isLogLevelUsable(LogLevel.TRACE)) {
                     for (let i = 0; i < commands.length; i++) {
                         let command = commands[i];
                         if (command.id === VALUE_CHANGED_COMMAND_ID) {

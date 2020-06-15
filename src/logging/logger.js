@@ -140,7 +140,7 @@ class Logger {
         return false;
     }
 
-    isLogLevelUseable(level) {
+    isLogLevelUsable(level) {
         checkParam(level, 'level');
         if (level.level) {
             return this.getLogLevel().level >= level.level;
