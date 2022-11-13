@@ -76,7 +76,7 @@
     "terser-webpack-plugin": "2.3.6",
     "typescript": "3.8.3",
     "webpack": "4.43.0",
-    "webpack-cli": "3.3.11"
+    "webpack-cli": "3.3.12"
   },
   "dependencies": {
     "emitter-component": "1.1.1"
